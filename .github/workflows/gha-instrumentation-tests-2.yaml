@@ -131,8 +131,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
 
-      ## restore jdk dir here
-      ## Should not need to install below because of previous job
+      ## restore jdk cache dir here
 
       - name: Cache jdk dir
         uses: actions/cache@v2
@@ -172,17 +171,7 @@ jobs:
       - name: Check environmental variables
         run: printenv
 
-      # # Need Java 8 for all tests
-      # - name: Set up Java 8
-      #   uses: actions/setup-java@v1.4.3
-      #   with:
-      #     java-version: 8
-
-      # # add jdk8 to environmental variables
-      # - name: save JAVA_HOME as JDK8 for later usage
-      #   run: echo "ORG_GRADLE_PROJECT_jdk8=$JAVA_HOME" >> $GITHUB_ENV
-
-      # Concurrent install of all Java versions
+      # Install Java version for this matrix run
       - name: Set up Java ${{ matrix.java-version }}
         uses: actions/setup-java@v1.4.3
         with:
@@ -277,7 +266,7 @@ jobs:
 
 
   testing_job_dependence: ## Testing Only
-    # needs: matrix_instrumentation_test  ## Only runs after matrix_instrumentation_test runs
+    needs: matrix_instrumentation_test  ## Only runs after matrix_instrumentation_test runs
     runs-on: ubuntu-latest
     steps:
       # Print Environmental variables 

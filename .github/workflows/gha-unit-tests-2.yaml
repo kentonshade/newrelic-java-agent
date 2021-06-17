@@ -8,10 +8,6 @@ on:
     branches: [ gha-testing ]
 
 jobs:
-  ## 
-  # 06/15: Add additional job here using matrix to build all versions of java, cache the directory, then rebuild with subsequent jobs.  
-  # Env variables will have to be added again (use script?)
-  ##
   install-all-java:
     runs-on: ubuntu-latest
     # strategy:
@@ -103,8 +99,6 @@ jobs:
               # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
               let JAVA_VERSION=JAVA_VERSION+1 
           done < jdk_paths.txt
-          # ls -1v /opt/hostedtoolcache/jdk/ | while read line ; do echo $line ; done 
-          # ls -1v /opt/hostedtoolcache/jdk/ | while read line ; do echo "ORG_GRADLE_PROJECT_jdk$line=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV ; done
 
       # Check ENV variables
       - name: Check environmental variables
@@ -132,8 +126,7 @@ jobs:
       - uses: gradle/wrapper-validation-action@v1
 
 
-      ## restore jdk dir here
-      ## Should not need to install below because of previous job
+      ## restore jdk cache dir here
 
       - name: Cache jdk dir
         uses: actions/cache@v2
@@ -151,7 +144,7 @@ jobs:
       - name: check cache dir
         run: ls /opt/hostedtoolcache/jdk/
 
-      # Create env variables for the jdks
+      # Create env variables for the jdks - perhaps move to shell script or custom action
       - name: Create env variables for the jdks
         run: |
           touch jdk_paths.txt
@@ -252,51 +245,51 @@ jobs:
 
 
 
-  # testing_job_dependence: ## Testing Only
-  #   # needs: matrix_unit_test
-  #   runs-on: ubuntu-latest
-  #   steps:        
-  #     # Print Environmental variables 
-  #     - name: Print Environmental variables (verify activate has been sourced)
-  #       run: |
-  #         printenv    
+  testing_job_dependence: ## Testing Only
+    needs: matrix_unit_test
+    runs-on: ubuntu-latest
+    steps:        
+      # Print Environmental variables 
+      - name: Print Environmental variables (verify activate has been sourced)
+        run: |
+          printenv    
 
-  #     - name: Cache test directory
-  #       uses: actions/cache@v2
-  #       env:
-  #         cache-name: cache-test-dir
-  #       with:
-  #         path: test-cache-dir
-  #         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-build-${{ env.cache-name }}-
-  #           ${{ runner.os }}-build-
-  #           ${{ runner.os }}-
+      - name: Cache test directory
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-test-dir
+        with:
+          path: test-cache-dir
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-  #     ## List cached items
-  #     - name: List items in testing cached directory
-  #       run: |
-  #         cd test-cache-dir
-  #         ls -la
-  #         cd ../
+      ## List cached items
+      - name: List items in testing cached directory
+        run: |
+          cd test-cache-dir
+          ls -la
+          cd ../
 
-  #     # Restore the gradle cache
-  #     - name: Restore the gradle caches
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           ~/.gradle/caches
-  #           ~/.gradle/wrapper
-  #         # The docs say to use hashfiles, but gradle itself is smart enough to
-  #         # re-download dependencies if it couldn't resolve them.
-  #         # Because our gradle cache is _so big_, I think a 90% cache is far
-  #         # better than a 0% cache.
-  #         key: ${{ runner.os }}-gradle
-  #         restore-keys: |
-  #           ${{ runner.os }}-gradle
+      # Restore the gradle cache
+      - name: Restore the gradle caches
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # The docs say to use hashfiles, but gradle itself is smart enough to
+          # re-download dependencies if it couldn't resolve them.
+          # Because our gradle cache is _so big_, I think a 90% cache is far
+          # better than a 0% cache.
+          key: ${{ runner.os }}-gradle
+          restore-keys: |
+            ${{ runner.os }}-gradle
 
-  #     - name: Check that all the Java versions are installed
-  #       run: |
-  #         pwd
-  #         ls -la 
-  #         whereis java
+      - name: Check that all the Java versions are installed
+        run: |
+          pwd
+          ls -la 
+          whereis java
