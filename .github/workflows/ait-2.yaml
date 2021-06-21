@@ -167,7 +167,7 @@ jobs:
       - name: Activate environment (testing script from workflow - temp)
         run: |
           echo "source activate"
-          source ait-workspace/bin/activate-gha
+          # source ait-workspace/bin/activate-gha
           # ### Start of activate scripts - is source command working?
           # # unset irrelevant variables
           # # GHA - don't believe this is required:
@@ -176,13 +176,14 @@ jobs:
           # # VIRTUAL_ENV="ait-workspace"
           # # export VIRTUAL_ENV
           # # export to GHA env 
-          # echo "VIRTUAL_ENV=${HOME}/ait-workspace" >> $GITHUB_ENV
+          echo "VIRTUAL_ENV=${HOME}/ait-workspace" >> $GITHUB_ENV
+          ls -la ${VIRTUAL_ENV} 
 
           # # _OLD_VIRTUAL_PATH="$PATH"
           # # PATH="$VIRTUAL_ENV/bin:$PATH"
           # # export PATH
           # # export to GHA PATH - this may need to be updated in a subsequent step.
-          # echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
+          echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
 
           # # unset PYTHONHOME if set (GHA - should not be set)
           # # if ! [ -z "${PYTHONHOME+_}" ] ; then
@@ -204,19 +205,19 @@ jobs:
           # # fi
 
           # # Make sure to unalias pydoc if it's already there
-          # alias pydoc 2>/dev/null >/dev/null && unalias pydoc
+          alias pydoc 2>/dev/null >/dev/null && unalias pydoc
 
-          # pydoc () {
-          #     python -m pydoc "$@"
-          # }
+          pydoc () {
+              python -m pydoc "$@"
+          }
 
           # # This should detect bash and zsh, which have a hash command that must
           # # be called to get it to forget past commands.  Without forgetting
           # # past commands the $PATH changes we made may not be respected
           # # GHA - necessary?
-          # # if [ -n "${BASH-}" ] || [ -n "${ZSH_VERSION-}" ] ; then
-          # #     hash -r 2>/dev/null
-          # # fi
+          if [ -n "${BASH-}" ] || [ -n "${ZSH_VERSION-}" ] ; then
+              hash -r 2>/dev/null
+          fi
           # ### End of activate script
 
       ## run to check for errors
