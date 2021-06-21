@@ -157,13 +157,6 @@ jobs:
           whereis source 
           source ait-workspace/bin/activate
 
-      # Print Environmental variables 
-      - name: Print Environmental variables (verify activate has been sourced)
-        run: |
-          printenv
-          env |  sort -f
-          printenv |  sort -f
-
       # Build agent jar
       - name: build agent jar
         run: |
@@ -202,6 +195,16 @@ jobs:
           # . bin/activate
           # source conf/testenv java ## This may not work.  variables will have to be added to step. 
           # conf/validate
+
+      # Print Environmental variables 
+      - name: Print Environmental variables (verify activate has been sourced)
+        run: |
+          printenv |  sort -f
+
+      # Print exported Environmental variables 
+      - name: Print exported Environmental variables (verify activate has been sourced)
+        run: |
+          env |  sort -f
 
       # Run tests
       - name: Run a single test from ait-workspace
