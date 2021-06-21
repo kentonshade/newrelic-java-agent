@@ -42,7 +42,7 @@ jobs:
           gh --version 
 
       # Print Environmental variables
-      - name: Print Environmental variables
+      - name: Print Environmental variablescd contents
         run: |
           printenv | sort -f
 
@@ -53,8 +53,17 @@ jobs:
           cd ait
           git status -sb 
           ls -la 
+
+      # Validate repo
+      - name: Validate AIT Workspace repo
+        run: |
+          ls -la 
+          cd ait-workspace 
+          git status -sb 
+          ls -la 
           echo "check contents of conf and bin directories"
           ls -la bin/
+          echo "and conf..."
           ls -la conf/
           cd ../
 
