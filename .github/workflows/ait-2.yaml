@@ -223,9 +223,9 @@ jobs:
       # Build agent jar test in ait-workspace
       - name: build agent jar
         run: |
-          echo testing variable availability between steps"
+          echo "testing variable availability between steps"
           echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
-          cd ait-workspace          
+          cd ait-workspace
           echo "building agent jar"
           # ./gradlew jar
 
