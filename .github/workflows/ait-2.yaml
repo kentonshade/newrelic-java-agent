@@ -177,7 +177,7 @@ jobs:
           # # export VIRTUAL_ENV
           # # export to GHA env 
           echo "VIRTUAL_ENV=${HOME}/ait-workspace" >> $GITHUB_ENV
-          ls -la ${VIRTUAL_ENV} 
+          ls -la $(echo ${VIRTUAL_ENV})
 
           # # _OLD_VIRTUAL_PATH="$PATH"
           # # PATH="$VIRTUAL_ENV/bin:$PATH"
