@@ -9,8 +9,8 @@ on:
     branches: [ gha-testing ]
 
 jobs:
-  timeout-minutes: 120
   AIT:
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     # strategy:
     #   ##max-parallel: 1 ## used to force sequential
