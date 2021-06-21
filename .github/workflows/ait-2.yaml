@@ -202,9 +202,14 @@ jobs:
           # conf/validate
 
       # Run tests
-      - name: Run tests
+      - name: Run a single test from ait-workspace
         run: |
           echo "running tests"
+          cd ait-workspace
+          echo "content of the ait-workspace:"
+          ls -la bin/
+          echo "review the current runtest-gha.sh"
+          cat runtest-gha.sh 
           # TEST_LOG_LEVEL=DEBUG ./bin/runtest.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
    # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
