@@ -223,12 +223,16 @@ jobs:
           # ### End of activate script
 
       ## run to check for errors
+      # Check Java
+      - name: Check java install and version
+        run: |
+          echo "Java version is: " $(Java -version)
+
+      ## run to check for errors
       # Build agent jar test in ait-workspace
       - name: build agent jar
         run: |
-          echo "testing variable availability between steps"
-          # echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
-          cd ait-workspace
+          # cd ait-workspace # No, as gradlew does not exist in this repo.
           echo "building agent jar"
           # ./gradlew jar
 
