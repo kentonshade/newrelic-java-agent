@@ -9,6 +9,9 @@ echo "The private IP is ${PIP}"
 echo "GHA_ENV_VAR=test_value" >> $GITHUB_ENV
 ## Test adding workspace bin to path:
 # echo "${HOME}/ait-workspace/bin" >> $GITHUB_PATH
+echo "Where is Java " $(whereis java)
+echo "add Java to PATH"
+echo "echo $(whereis java)" >> $GITHUB_PATH
 
 ## Check env variables - NOTE: Changes above are NOT relected here, NOT until a subsequent step or printenv command
 printenv

@@ -374,7 +374,7 @@ jobs:
       # Check Java
       - name: Check java install and version
         env:
-          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64
+          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64/java 
         run: |
           echo "Java version is: " $(Java -version)
 
