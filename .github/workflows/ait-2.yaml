@@ -161,6 +161,8 @@ jobs:
       - name: Print Environmental variables (verify activate has been sourced)
         run: |
           printenv
+          env |  sort -f
+          printenv |  sort -f
 
       # Build agent jar
       - name: build agent jar
