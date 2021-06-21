@@ -376,7 +376,7 @@ jobs:
         env:
           JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64/java 
         run: |
-          echo "Java version is: " $(Java -version)
+          echo "Java version is: " $(java -version)
 
       ## run to check for errors
       # Build agent jar test in ait-workspace
