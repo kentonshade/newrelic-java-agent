@@ -167,8 +167,7 @@ jobs:
       - name: Activate environment (testing script from workflow - temp)
         run: |
           echo "source activate"
-          whereis source 
-          source ait-workspace/bin/activate-gha
+          # source ait-workspace/bin/activate-gha
           ### Start of activate scripts
           # unset irrelevant variables
           # GHA - don't believe this is required:
