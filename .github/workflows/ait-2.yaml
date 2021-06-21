@@ -181,7 +181,7 @@ jobs:
           # _OLD_VIRTUAL_PATH="$PATH"
           # PATH="$VIRTUAL_ENV/bin:$PATH"
           # export PATH
-          # export to GHA PATH
+          # export to GHA PATH - this may need to be updated in a subsequent step.
           echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
 
           # unset PYTHONHOME if set (GHA - should not be set)
@@ -223,6 +223,8 @@ jobs:
       # Build agent jar test in ait-workspace
       - name: build agent jar
         run: |
+          echo testing variable availability between steps"
+          echo "${VIRTUAL_ENV}/bin" >> $GITHUB_PATH
           cd ait-workspace          
           echo "building agent jar"
           # ./gradlew jar
@@ -272,6 +274,9 @@ jobs:
 
       
       ## Need to set env variable per step (grab exported variables from scripts)
+      ## Files referenced from runtests-gha-sh:
+      ## conf/validate, use conf/validate-gha
+      ## Check for all variable assignment in script.
 
       # Run tests
       - name: Run a single test from ait-workspace
@@ -283,7 +288,7 @@ jobs:
           echo "review the current runtest-gha.sh"
           cat bin/runtest-gha.sh 
           whoami
-          # TEST_LOG_LEVEL=DEBUG ./bin/runtest.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
+          # TEST_LOG_LEVEL=DEBUG ./bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
    # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
    # cd workspace/JavaAgentBranch
