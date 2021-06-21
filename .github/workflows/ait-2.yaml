@@ -44,7 +44,7 @@ jobs:
       # Print Environmental variables
       - name: Print Environmental variables
         run: |
-          printenv
+          printenv | sort -f
 
       # Validate repo
       - name: Validate AIT repo
@@ -53,6 +53,9 @@ jobs:
           cd ait
           git status -sb 
           ls -la 
+          echo "check contents of conf and bin directories"
+          ls -la bin/
+          ls -la conf/
           cd ../
 
       - name: Checkout Cache 1
@@ -151,15 +154,18 @@ jobs:
           ./.github/scripts/identify-os.sh
 
       # Source "activate"
+      ## Determine if this is even necessary?
       - name: Activate environment
         run: |
           echo "source activate"
           whereis source 
           source ait-workspace/bin/activate
 
-      # Build agent jar
+      ## run to check for errors
+      # Build agent jar test in ait-workspace
       - name: build agent jar
         run: |
+          cd ait-workspace          
           echo "building agent jar"
           # ./gradlew jar
 
@@ -205,6 +211,9 @@ jobs:
       - name: Print exported Environmental variables (verify activate has been sourced)
         run: |
           env |  sort -f
+
+      
+      ## Need to set env variable per step (grab exported variables from scripts)
 
       # Run tests
       - name: Run a single test from ait-workspace
