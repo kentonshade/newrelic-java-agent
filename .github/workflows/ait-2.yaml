@@ -191,17 +191,18 @@ jobs:
           #     unset PYTHONHOME
           # fi
 
-          if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT-}" ] ; then
-              _OLD_VIRTUAL_PS1="$PS1"
-              if [ "x" != x ] ; then
-                  PS1="$PS1"
-              else
-                  PS1="(`basename \"$VIRTUAL_ENV\"`) $PS1"
-              fi
-              # GHA - export PS1
-              # export PS1
-              echo "${PS1}" >> $GITHUB_ENV
-          fi
+          ## commenting for now
+          # if [ -z "${VIRTUAL_ENV_DISABLE_PROMPT-}" ] ; then
+          #     _OLD_VIRTUAL_PS1="$PS1"
+          #     if [ "x" != x ] ; then
+          #         PS1="$PS1"
+          #     else
+          #         PS1="(`basename \"$VIRTUAL_ENV\"`) $PS1"
+          #     fi
+          #     # GHA - export PS1
+          #     # export PS1
+          #     echo "${PS1}" >> $GITHUB_ENV
+          # fi
 
           # Make sure to unalias pydoc if it's already there
           alias pydoc 2>/dev/null >/dev/null && unalias pydoc
