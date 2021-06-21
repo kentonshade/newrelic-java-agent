@@ -373,6 +373,8 @@ jobs:
       # Adding build job and cacahe restore as in other test workflows
       # Check Java
       - name: Check java install and version
+        env:
+          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64
         run: |
           echo "Java version is: " $(Java -version)
 
