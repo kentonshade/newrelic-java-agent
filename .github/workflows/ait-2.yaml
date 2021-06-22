@@ -385,7 +385,7 @@ jobs:
         run: |
           # cd ait-workspace # No, as gradlew does not exist in this repo.
           echo "building agent jar"
-          .gradlew --help
+          ./gradlew --help
           ./gradlew jar
 
       ## CUSTOM ACTION FOR AITs
