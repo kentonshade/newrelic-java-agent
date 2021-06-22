@@ -371,6 +371,7 @@ jobs:
 
       ## run to check for errors
       # Adding build job and cacahe restore as in other test workflows
+      ## a possible matrix strategy for this job - to test for each JDK
       # Check Java
       - name: Check java install and version
         env:
@@ -385,7 +386,7 @@ jobs:
           # cd ait-workspace # No, as gradlew does not exist in this repo.
           echo "building agent jar"
           .gradlew --help
-          # ./gradlew jar
+          ./gradlew jar
 
       ## CUSTOM ACTION FOR AITs
       # Still need to copy all of the repos into the New Relic Org.
