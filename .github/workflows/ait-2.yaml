@@ -21,55 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Install 8
-      - name: Set up Java 8
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 8
-
-      # Install 9
-      - name: Set up Java 9
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 9
-
-      # Install 10
-      - name: Set up Java 10
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 10
-
-      # Install 11
-      - name: Set up Java 11
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 11
-
-      # Install 12
-      - name: Set up Java 12
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 12
-
-      # Install 13
-      - name: Set up Java 13
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 13
-
-      # Install 14
-      - name: Set up Java 14
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 14
-
-      # Install 15
-      - name: Set up Java 15
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 15
-
+      # Check for JDK cache
       - name: Cache jdk dir
+        id: cache-check
         uses: actions/cache@v2
         env:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
@@ -81,13 +35,87 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+      ## ADD JDK cache here to allow cache hit
+
+      # Install 8
+      - name: Set up Java 8
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 8
+
+      # Install 9
+      - name: Set up Java 9
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 9
+
+      # Install 10
+      - name: Set up Java 10
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 10
+
+      # Install 11
+      - name: Set up Java 11
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
+      # Install 12
+      - name: Set up Java 12
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 12
+
+      # Install 13
+      - name: Set up Java 13
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 13
+
+      # Install 14
+      - name: Set up Java 14
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 14
+
+      # Install 15
+      - name: Set up Java 15
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 15
+
+      # Check to see if this action should be aclled again if cache miss
+      # - name: Cache jdk dir
+      #   if: steps.cache-check.outputs.cache-hit != 'true'
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-jdk-dir ## See if this works and includes all versions
+      #   with:
+      #     path: /opt/hostedtoolcache/jdk/
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
+
       # Check contents of cache path
       - name: check cache dir
+        if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           ls -la /opt/hostedtoolcache/jdk/
 
       # Create env variables for the jdks
       - name: Create env variables for the jdks
+        if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           touch jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
@@ -109,6 +137,7 @@ jobs:
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"
+        if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           echo "Current $JAVA_HOME = " ${JAVA_HOME}
           whereis java #determine dir to cache
