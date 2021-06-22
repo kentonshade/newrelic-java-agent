@@ -94,28 +94,28 @@ jobs:
           java-version: 15
 
       # Check to see if this action should be aclled again if cache miss
-      # - name: Cache jdk dir
-      #   if: steps.cache-check.outputs.cache-hit != 'true'
-      #   uses: actions/cache@v2
-      #   env:
-      #     cache-name: cache-jdk-dir ## See if this works and includes all versions
-      #   with:
-      #     path: /opt/hostedtoolcache/jdk/
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
+      - name: Cache jdk dir
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-jdk-dir ## See if this works and includes all versions
+        with:
+          path: /opt/hostedtoolcache/jdk/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       # Check contents of cache path
       - name: check cache dir
-        if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           ls -la /opt/hostedtoolcache/jdk/
 
       # Create env variables for the jdks
       - name: Create env variables for the jdks
-        if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           touch jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
@@ -137,7 +137,7 @@ jobs:
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"
-        if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           echo "Current $JAVA_HOME = " ${JAVA_HOME}
           whereis java #determine dir to cache
