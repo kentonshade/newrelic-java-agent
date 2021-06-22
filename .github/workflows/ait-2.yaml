@@ -1,5 +1,7 @@
 ## Still need to configure AIT dependencies
 ## Testing the with the AIT workspace content in a test branch
+## TODO: Need to include the gradle cache
+## TODO: add cache check conditional to steps required to build cache
 name: GHA Migration - AIT 2
 
 on:
@@ -302,6 +304,21 @@ jobs:
         run: printenv
 
       # End Java restore section
+
+      # Restore the gradle cache
+      - name: Restore the gradle caches
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # The docs say to use hashfiles, but gradle itself is smart enough to
+          # re-download dependencies if it couldn't resolve them.
+          # Because our gradle cache is _so big_, I think a 90% cache is far
+          # better than a 0% cache.
+          key: ${{ runner.os }}-gradle
+          restore-keys: |
+            ${{ runner.os }}-gradle
 
       ## TESTING SECTION
 
