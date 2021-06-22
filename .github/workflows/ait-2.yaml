@@ -374,7 +374,7 @@ jobs:
       # Check Java
       - name: Check java install and version
         env:
-          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64/java 
+          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64/
         run: |
           echo "Java version is: " $(java -version)
 
@@ -384,6 +384,7 @@ jobs:
         run: |
           # cd ait-workspace # No, as gradlew does not exist in this repo.
           echo "building agent jar"
+          .gradlew --help
           # ./gradlew jar
 
       ## CUSTOM ACTION FOR AITs
