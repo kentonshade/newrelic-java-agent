@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Check for JDK cache
+      # JDK cache
       - name: Cache jdk dir
         id: cache-check
         uses: actions/cache@v2
@@ -24,7 +24,6 @@ jobs:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
         with:
           path: |
-            # actions-cache
             ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/jdk/
@@ -34,16 +33,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
-
-      # Create additional cache path
-      - name: Create additional cache path test
-        run: |
-          # mkdir actions-cache
-          echo "checking for actions-cache"
-          ls -la 
-
-      ## ADD JDK cache here to allow cache hit
 
       # Install 8
       - name: Set up Java 8
@@ -101,20 +90,6 @@ jobs:
         with:
           java-version: 15
 
-      # Check to see if this action should be aclled again if cache miss - Post Cache jdk fir step saves cache, not necessary to call again
-      # - name: Cache jdk dir
-      #   if: steps.cache-check.outputs.cache-hit != 'true'
-      #   uses: actions/cache@v2
-      #   env:
-      #     cache-name: cache-jdk-dir ## See if this works and includes all versions
-      #   with:
-      #     path: /opt/hostedtoolcache/jdk/
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt') }} ## Explore extensions to cache if no lock file
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
-
       # Check contents of cache path
       - name: check cache dir
         # if: steps.cache-check.outputs.cache-hit == 'true'
@@ -140,9 +115,6 @@ jobs:
       - name: Create env variables for the jdks
         if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
-          # touch jdk_paths.txt
-          # ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
-          # cat jdk_paths.txt
           JAVA_VERSION=8
           while read line
           do
