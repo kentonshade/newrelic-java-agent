@@ -289,13 +289,19 @@ jobs:
 
       ## restore jdk cache dir here
 
+      # JDK cache
       - name: Cache jdk dir
+        id: cache-check
         uses: actions/cache@v2
         env:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
         with:
-          path: /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/*') }} ## removing matrix variable to test if all will be restored.
+          path: |
+            ~/jdk_paths.txt
+            jdk_paths.txt
+            /opt/hostedtoolcache/jdk/
+          # key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -303,15 +309,29 @@ jobs:
 
       # Check contents of cache path
       - name: check cache dir
-        run: ls /opt/hostedtoolcache/jdk/
+        # if: steps.cache-check.outputs.cache-hit == 'true'
+        run: |
+          pwd
+          echo "contents of cache dir: "
+          ls -la /opt/hostedtoolcache/jdk/
+          echo "checking for jdk_paths.txt: "
+          ls -la
+          echo "checking for file in home: "
+          ls -la ~/    
 
-      # Create env variables for the jdks - perhaps move to shell script or custom action
-      - name: Create env variables for the jdks
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
-          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt ## If cache hit, this file should already exist from previous job.
-          cat jdk_paths.txt
-          # Below is a counter, not java "8"
+          touch ~/jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
+
+      # Create env variables for the jdks
+      - name: Create env variables for the jdks
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
           JAVA_VERSION=8
           while read line
           do
@@ -319,7 +339,7 @@ jobs:
               echo The counter is $COUNTER
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
-              echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
+              # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
               let JAVA_VERSION=JAVA_VERSION+1 
           done < jdk_paths.txt
 
