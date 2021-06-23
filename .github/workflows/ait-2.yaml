@@ -13,14 +13,8 @@ on:
 jobs:
   install-all-java:
     runs-on: ubuntu-latest
-    # strategy:
-    #   ##max-parallel: 1 ## used to force sequential
-    #   fail-fast: false
-    #   matrix:
-    #     java-version: [8, 9, 10, 11, 12, 13, 14, 15] ## caching won't work with matrix, break this out into individual installs
     steps:
       - uses: actions/checkout@v2
-
       # Check for JDK cache
       - name: Cache jdk dir
         id: cache-check
@@ -93,19 +87,19 @@ jobs:
         with:
           java-version: 15
 
-      # Check to see if this action should be aclled again if cache miss
-      - name: Cache jdk dir
-        if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-jdk-dir ## See if this works and includes all versions
-        with:
-          path: /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # Check to see if this action should be aclled again if cache miss - Post Cache jdk fir step saves cache, not necessary to call again
+      # - name: Cache jdk dir
+      #   if: steps.cache-check.outputs.cache-hit != 'true'
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-jdk-dir ## See if this works and includes all versions
+      #   with:
+      #     path: /opt/hostedtoolcache/jdk/
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       # Check contents of cache path
       - name: check cache dir
@@ -113,13 +107,21 @@ jobs:
         run: |
           ls -la /opt/hostedtoolcache/jdk/
 
-      # Create env variables for the jdks
-      - name: Create env variables for the jdks
-        # if: steps.cache-check.outputs.cache-hit == 'true'
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
           cat jdk_paths.txt
+
+      # Create env variables for the jdks - this step not necessary here
+      - name: Create env variables for the jdks
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          # touch jdk_paths.txt
+          # ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          # cat jdk_paths.txt
           JAVA_VERSION=8
           while read line
           do
@@ -314,7 +316,7 @@ jobs:
       - name: Create env variables for the jdks
         run: |
           touch jdk_paths.txt
-          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt ## If cache hit, this file should already exist from previous job.
           cat jdk_paths.txt
           # Below is a counter, not java "8"
           JAVA_VERSION=8
@@ -417,7 +419,7 @@ jobs:
 
       ## run to check for errors
       # Adding build job and cacahe restore as in other test workflows
-      ## a possible matrix strategy for this job - to test for each JDK
+      ## a possible matrix strategy for this job - to test for each JDK - DETERMINE WITH TEAM IF MATRIX IS NECESSARY
       # Check Java
       - name: Check java install and version
         env:
@@ -463,9 +465,9 @@ jobs:
       - name: Activate environment and run AITs
         run: |
           echo "Activate environment and run AITs"
-          # . bin/activate
-          # source conf/testenv java ## This may not work.  variables will have to be added to step. 
-          # conf/validate
+          # . ait-workspace/bin/activate-gha # Currently done in step above (Activate environment)
+          # source ait-workspace/conf/testenv-gha java ## This may not work.  variables will have to be added to step. 
+          # . ait-workspace/conf/validate-gha
 
       # Print Environmental variables 
       - name: Print Environmental variables (verify activate has been sourced)
@@ -487,13 +489,13 @@ jobs:
       - name: Run a single test from ait-workspace
         run: |
           echo "running tests"
-          cd ait-workspace
-          echo "content of the ait-workspace:"
-          ls -la bin/
-          echo "review the current runtest-gha.sh"
-          cat bin/runtest-gha.sh 
-          whoami
-          # TEST_LOG_LEVEL=DEBUG ./bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
+          # cd ait-workspace
+          # echo "content of the ait-workspace:"
+          # ls -la bin/
+          # echo "review the current runtest-gha.sh"
+          # cat bin/runtest-gha.sh 
+          echo "current user is " $(whoami)
+          # TEST_LOG_LEVEL=DEBUG .ait-workspace/bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
    # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
    # cd workspace/JavaAgentBranch
