@@ -108,6 +108,7 @@ jobs:
       - name: check cache dir
         # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
+          pwd
           echo "contents of cache dir: "
           ls -la /opt/hostedtoolcache/jdk/
           echo "checking for jdk_paths.txt: "
