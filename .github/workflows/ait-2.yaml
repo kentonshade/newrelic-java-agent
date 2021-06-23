@@ -330,7 +330,7 @@ jobs:
 
       # Create env variables for the jdks
       - name: Create env variables for the jdks
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        # if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           JAVA_VERSION=8
           while read line
@@ -345,7 +345,7 @@ jobs:
 
       # Check ENV variables
       - name: Check environmental variables
-        run: printenv
+        run: printenv | sort -f
 
       # End Java restore section
 

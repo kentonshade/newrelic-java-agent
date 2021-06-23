@@ -10,85 +10,108 @@ on:
 jobs:
   install-all-java:
     runs-on: ubuntu-latest
-    # strategy:
-    #   ##max-parallel: 1 ## used to force sequential
-    #   fail-fast: false
-    #   matrix:
-    #     java-version: [8, 9, 10, 11, 12, 13, 14, 15] ## caching won't work with matrix, break this out into individual installs
     steps:
       - uses: actions/checkout@v2
 
+      # JDK cache
+      - name: Cache jdk dir
+        id: cache-check
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-jdk-dir ## See if this works and includes all versions
+        with:
+          path: |
+            ~/jdk_paths.txt
+            jdk_paths.txt
+            /opt/hostedtoolcache/jdk/
+          # key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       # Install 8
       - name: Set up Java 8
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 8
 
       # Install 9
       - name: Set up Java 9
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 9
 
       # Install 10
       - name: Set up Java 10
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 10
 
       # Install 11
       - name: Set up Java 11
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
 
       # Install 12
       - name: Set up Java 12
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 12
 
       # Install 13
       - name: Set up Java 13
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 13
 
       # Install 14
       - name: Set up Java 14
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 14
 
       # Install 15
       - name: Set up Java 15
+        if: steps.cache-check.outputs.cache-hit != 'true'
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 15
 
-      - name: Cache jdk dir
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-jdk-dir ## See if this works and includes all versions
-        with:
-          path: /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*') }} ## Explore extensions to cache if no lock file
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
       # Check contents of cache path
       - name: check cache dir
+        # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
+          pwd
+          echo "contents of cache dir: "
           ls -la /opt/hostedtoolcache/jdk/
+          echo "checking for jdk_paths.txt: "
+          ls -la
+          echo "checking for file in home: "
+          ls -la ~/       
 
-      # Create env variables for the jdks
-      - name: Create env variables for the jdks
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
+          touch ~/jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
-          cat jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
+
+      # Create env variables for the jdks - this step not necessary here
+      - name: Create env variables for the jdks
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
           JAVA_VERSION=8
           while read line
           do
@@ -102,10 +125,11 @@ jobs:
 
       # Check ENV variables
       - name: Check environmental variables
-        run: printenv
+        run: printenv | sort -f
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"
+        # if: steps.cache-check.outputs.cache-hit == 'true'
         run: |
           echo "Current $JAVA_HOME = " ${JAVA_HOME}
           whereis java #determine dir to cache
@@ -128,13 +152,19 @@ jobs:
 
       ## restore jdk cache dir here
 
+      # JDK cache
       - name: Cache jdk dir
+        id: cache-check
         uses: actions/cache@v2
         env:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
         with:
-          path: /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ hashFiles('**/*') }} ## removing matrix variable to test if all will be restored.
+          path: |
+            ~/jdk_paths.txt
+            jdk_paths.txt
+            /opt/hostedtoolcache/jdk/
+          # key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -142,15 +172,29 @@ jobs:
 
       # Check contents of cache path
       - name: check cache dir
-        run: ls /opt/hostedtoolcache/jdk/
+        # if: steps.cache-check.outputs.cache-hit == 'true'
+        run: |
+          pwd
+          echo "contents of cache dir: "
+          ls -la /opt/hostedtoolcache/jdk/
+          echo "checking for jdk_paths.txt: "
+          ls -la
+          echo "checking for file in home: "
+          ls -la ~/    
 
-      # Create env variables for the jdks - perhaps move to shell script or custom action
-      - name: Create env variables for the jdks
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
+          touch ~/jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
-          cat jdk_paths.txt
-          # Below is a counter, not java "8"
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
+
+      # Create env variables for the jdks
+      - name: Create env variables for the jdks
+        # if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
           JAVA_VERSION=8
           while read line
           do
@@ -158,13 +202,13 @@ jobs:
               echo The counter is $COUNTER
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
-              echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
+              # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
               let JAVA_VERSION=JAVA_VERSION+1 
           done < jdk_paths.txt
 
       # Check ENV variables
       - name: Check environmental variables
-        run: printenv
+        run: printenv | sort -f 
 
       # install of matrix Java versions
       - name: Set up Java ${{ matrix.java-version }}
