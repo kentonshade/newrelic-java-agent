@@ -16,13 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Create additional cache path
-      - name: Create additional cache path test
-        run: |
-          # mkdir actions-cache
-          echo "checking for actions-cache"
-          ls -la 
-
       # Check for JDK cache
       - name: Cache jdk dir
         id: cache-check
@@ -31,7 +24,8 @@ jobs:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
         with:
           path: |
-            actions-cache
+            # actions-cache
+            ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/jdk/
           # key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
@@ -40,6 +34,14 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+
+      # Create additional cache path
+      - name: Create additional cache path test
+        run: |
+          # mkdir actions-cache
+          echo "checking for actions-cache"
+          ls -la 
 
       ## ADD JDK cache here to allow cache hit
 
@@ -122,17 +124,17 @@ jobs:
           ls -la /opt/hostedtoolcache/jdk/
           echo "checking for jdk_paths.txt: "
           ls -la
-          echo "what's in actions-cache: "
-          ls -la actions-cache/          
+          echo "checking for file in home: "
+          ls -la ~/       
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
-        # if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-check.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
+          touch ~/jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
-          cp jdk_paths.txt actions-cache/ 
-          cat jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
 
       # Create env variables for the jdks - this step not necessary here
       - name: Create env variables for the jdks
