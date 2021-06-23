@@ -121,7 +121,7 @@ jobs:
           echo "contents of cache dir: "
           ls -la /opt/hostedtoolcache/jdk/
           echo "checking for jdk_paths.txt: "
-          ls -la
+          ls -la ~/ 
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -129,6 +129,7 @@ jobs:
         run: |
           touch jdk_paths.txt
           ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          cp jdk_paths.txt actions-cache/ 
           cat jdk_paths.txt
 
       # Create env variables for the jdks - this step not necessary here
