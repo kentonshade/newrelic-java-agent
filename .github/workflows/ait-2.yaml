@@ -492,6 +492,14 @@ jobs:
         run: |
           env |  sort -f
 
+      # attempting setup of environment for AIT in GHA (referencing README.md)
+      - name: Testing autoconfigure
+        run: |
+          echo "running conf/autoconfigure"
+          cd ait-workspace
+          conf/autoconfigure
+          cat conf/java_local_config.yaml
+
       
       ## Need to set env variable per step (grab exported variables from scripts)
       ## Files referenced from runtests-gha-sh:
