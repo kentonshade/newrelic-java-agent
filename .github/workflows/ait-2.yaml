@@ -436,7 +436,7 @@ jobs:
       # Check Java
       - name: Check java install and version
         env:
-          JAVA_HOME: /opt/hostedtoolcache/jdk/15.0.3/x64/
+          JAVA_HOME: /opt/hostedtoolcache/jdk/8.0.292/x64
         run: |
           echo "Java version is: " $(java -version)
 
@@ -506,7 +506,9 @@ jobs:
           # echo "content of the ait-workspace:"
           # ls -la bin/
           # echo "review the current runtest-gha.sh"
-          # cat bin/runtest-gha.sh 
+          # cat bin/runtest-gha.sh
+          echo "whcich version of python are we using?"
+          which python  
           echo "current user is " $(whoami)
           # TEST_LOG_LEVEL=DEBUG .ait-workspace/bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
