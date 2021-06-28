@@ -498,7 +498,7 @@ jobs:
           echo "running conf/autoconfigure"
           cd ait-workspace
           JAVA8JRE=/opt/hostedtoolcache/jdk/8.0.292/x64 conf/autoconfigure
-          cat conf/java_local_config.yaml
+          cat conf/java_local_config.yml
 
       
       ## Need to set env variable per step (grab exported variables from scripts)
