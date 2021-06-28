@@ -508,9 +508,9 @@ jobs:
           # echo "review the current runtest-gha.sh"
           # cat bin/runtest-gha.sh
           echo "whcich version of python are we using?"
-          which python  
+          which python && python --version  
           echo "current user is " $(whoami)
-          # TEST_LOG_LEVEL=DEBUG .ait-workspace/bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
+          TEST_LOG_LEVEL=DEBUG .ait-workspace/bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
    # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
    # cd workspace/JavaAgentBranch
