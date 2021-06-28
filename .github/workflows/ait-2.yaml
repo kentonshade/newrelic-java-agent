@@ -173,7 +173,7 @@ jobs:
           gh --version 
 
       # Print Environmental variables
-      - name: Print Environmental variablescd contents
+      - name: Print Environmental variables
         run: |
           printenv | sort -f
 
@@ -497,7 +497,7 @@ jobs:
         run: |
           echo "running conf/autoconfigure"
           cd ait-workspace
-          conf/autoconfigure
+          JAVA8JRE=/opt/hostedtoolcache/jdk/8.0.292/x64 conf/autoconfigure
           cat conf/java_local_config.yaml
 
       
