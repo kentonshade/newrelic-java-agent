@@ -5,9 +5,14 @@
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later match takes precedence,
-# @global-owner1 and @global-owner2 will be requested for
+# @global-owner1 and @kentonshade will be requested for
 # review when someone opens a pull request.
-*       @kentonshade 
+*  @global-owner1 @kentonshade 
+
+# In this example, @kentonshade owns any files in the .github
+# directory at the root of the repository and any of its
+# subdirectories.  Checking below syntax.  Do we need absolute paths from the root?
+.github /.github @kentonshade
 
 # Order is important; the last matching pattern takes the most
 # precedence. When someone opens a pull request that only
