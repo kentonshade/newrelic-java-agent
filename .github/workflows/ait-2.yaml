@@ -154,7 +154,7 @@ jobs:
       - name: Checkout AIT repo test
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-agent-integration-tests
+          repository: newrelic/java-agent-integration-tests
           ref: testing
           token: ${{ secrets.AITPAT }}
           path: ait 
@@ -162,7 +162,7 @@ jobs:
       - name: Checkout AIT Jenkins workspace repository
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-ait-workspace
+          repository: newrelic/java-ait-workspace
           ref: main
           token: ${{ secrets.AITPAT }}
           path: ait-workspace     
@@ -201,7 +201,7 @@ jobs:
       - name: Checkout Cache 1
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-ait-cache-1
+          repository: newrelic/java-ait-cache-1
           ref: main
           token: ${{ secrets.AITPAT }}
           path: appcache1 
@@ -220,7 +220,7 @@ jobs:
       - name: Checkout Cache 2
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-ait-cache-2
+          repository: newrelic/java-ait-cache-2
           ref: main
           token: ${{ secrets.AITPAT }}
           path: appcache2
@@ -239,7 +239,7 @@ jobs:
       - name: Checkout Cache 3
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-ait-cache-3
+          repository: newrelic/java-ait-cache-3
           ref: main
           token: ${{ secrets.AITPAT }}
           path: appcache3 
@@ -258,7 +258,7 @@ jobs:
       - name: Checkout Cache 4
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-ait-cache-4
+          repository: newrelic/java-ait-cache-4
           ref: main
           token: ${{ secrets.AITPAT }}
           path: appcache4 
@@ -455,7 +455,7 @@ jobs:
       - name: Get private repo with AIT action
         uses: actions/checkout@v2
         with:
-          repository: kentonshade/java-actions
+          repository: newrelic/java-actions
           ref: main
           token: ${{ secrets.ACTIONS_TOKEN }}
           path: java-actions
