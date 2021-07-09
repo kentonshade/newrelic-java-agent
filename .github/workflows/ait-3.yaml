@@ -1,0 +1,406 @@
+name: GHA Migration - AIT 3
+
+on:
+  # pull_request:
+  #   branches: [ main ]
+  push:
+    branches: [ gha-testing ]
+
+jobs:
+  install-all-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # JDK cache
+      - name: Cache jdk dir
+        id: cache-check
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-jdk-dir ## See if this works and includes all versions
+        with:
+          path: |
+            ~/jdk_paths.txt
+            jdk_paths.txt
+            /opt/hostedtoolcache/jdk/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          # key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      # Install 8
+      - name: Set up Java 8
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 8
+
+      # Install 9
+      - name: Set up Java 9
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 9
+
+      # Install 10
+      - name: Set up Java 10
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 10
+
+      # Install 11
+      - name: Set up Java 11
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
+      # Install 12
+      - name: Set up Java 12
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 12
+
+      # Install 13
+      - name: Set up Java 13
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 13
+
+      # Install 14
+      - name: Set up Java 14
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 14
+
+      # Install 15
+      - name: Set up Java 15
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 15
+
+      # Check contents of cache path
+      - name: check cache dir
+        # if: steps.cache-check.outputs.cache-hit == 'true'
+        run: |
+          pwd
+          echo "contents of cache dir: "
+          ls -la /opt/hostedtoolcache/jdk/
+          echo "checking for jdk_paths.txt: "
+          ls -la
+          echo "checking for file in home: "
+          ls -la ~/       
+
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          touch jdk_paths.txt
+          touch ~/jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
+
+      # Create env variables for the jdks - this step not necessary here
+      - name: Create env variables for the jdks
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          JAVA_VERSION=8
+          while read line
+          do
+              echo $line
+              echo The counter is $COUNTER
+              echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
+              # Below only use for subsequent jobs, as the jdk build doesn't set these paths
+              # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
+              let JAVA_VERSION=JAVA_VERSION+1 
+          done < jdk_paths.txt
+
+      # Check ENV variables
+      - name: Check environmental variables
+        run: printenv | sort -f
+
+      # Check $JAVA_HOME
+      - name: Check "$JAVA_HOME"
+        # if: steps.cache-check.outputs.cache-hit == 'true'
+        run: |
+          echo "Current $JAVA_HOME = " ${JAVA_HOME}
+          whereis java #determine dir to cache
+
+  ###
+
+  AIT:
+    needs: install-all-java
+    timeout-minutes: 120
+    runs-on: ubuntu-latest
+    # strategy:
+    #   ##max-parallel: 1 ## used to force sequential
+    #   fail-fast: false
+    #   matrix:
+    #     java-version: [8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Checkout AIT repo test
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-agent-integration-tests
+          ref: gha
+          token: ${{ secrets.AITPAT }}
+          path: ait 
+
+      - name: Checkout AIT Jenkins workspace repository
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-ait-workspace
+          ref: main
+          token: ${{ secrets.AITPAT }}
+          path: ait-workspace     
+
+      # Check for GH CLI
+      - name: GitHub CLI installed?
+        run: |
+          gh --version 
+
+      # Print Environmental variables
+      - name: Print Environmental variables
+        run: |
+          printenv | sort -f
+
+      # Validate repo
+      - name: Validate AIT repo
+        run: |
+          ls -la 
+          cd ait
+          git status -sb 
+          ls -la 
+
+      # Validate repo
+      - name: Validate AIT Workspace repo
+        run: |
+          ls -la 
+          cd ait-workspace 
+          git status -sb 
+          ls -la 
+          echo "check contents of conf and bin directories"
+          ls -la bin/
+          echo "and conf..."
+          ls -la conf/
+          cd ../
+
+      - name: Checkout Cache 1
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-ait-cache-1
+          ref: gha
+          token: ${{ secrets.AITPAT }}
+          path: appcache1 
+          lfs: true
+
+      # Validate repo
+      - name: Validate cache 1
+        run: |
+          ls -la 
+          cd appcache1 
+          git status -sb
+          git remote -v
+          ls -la 
+          cd ../ 
+
+      - name: Checkout Cache 2
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-ait-cache-2
+          ref: gha
+          token: ${{ secrets.AITPAT }}
+          path: appcache2
+          lfs: true
+
+      # Validate repo
+      - name: Validate cache 2
+        run: |
+          ls -la 
+          cd appcache2 
+          git status -sb
+          git remote -v
+          ls -la 
+          cd ../ 
+
+      - name: Checkout Cache 3
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-ait-cache-3
+          ref: gha
+          token: ${{ secrets.AITPAT }}
+          path: appcache3 
+          lfs: true
+
+      # Validate repo
+      - name: Validate cache 3
+        run: |
+          ls -la 
+          cd appcache3 
+          git status -sb
+          git remote -v
+          ls -la 
+          cd ../ 
+
+      - name: Checkout Cache 4
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-ait-cache-4
+          ref: gha
+          token: ${{ secrets.AITPAT }}
+          path: appcache4 
+          lfs: true
+
+      # Validate repo
+      - name: Validate cache 4
+        run: |
+          ls -la 
+          cd appcache4 
+          git status -sb
+          git remote -v
+          ls -la 
+          cd ../ 
+
+      # Consolidate caches into one directory
+      - name: Consolidate caches
+        run: |
+          ls -la 
+          mkdir apps
+          mv appcache1/* apps/
+          mv appcache2/* apps/
+          mv appcache3/* apps/
+          mv appcache4/* apps/
+          cd apps
+          ls -la 
+          cd ../ 
+
+      ## restore jdk cache dir here
+
+      # JDK cache
+      - name: Cache jdk dir
+        id: cache-check
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-jdk-dir ## See if this works and includes all versions
+        with:
+          path: |
+            ~/jdk_paths.txt
+            jdk_paths.txt
+            /opt/hostedtoolcache/jdk/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          # key: ${{ runner.os }}-build-${{ env.cache-name }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      # Check contents of cache path
+      - name: check cache dir
+        # if: steps.cache-check.outputs.cache-hit == 'true'
+        run: |
+          pwd
+          echo "contents of cache dir: "
+          ls -la /opt/hostedtoolcache/jdk/
+          echo "checking for jdk_paths.txt: "
+          ls -la
+          echo "checking for file in home: "
+          ls -la ~/    
+
+      # Create jdk_paths.txt
+      - name: Create jdk_paths
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          touch jdk_paths.txt
+          touch ~/jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > jdk_paths.txt
+          ls -1v /opt/hostedtoolcache/jdk/ > ~/jdk_paths.txt
+
+      # Create env variables for the jdks
+      - name: Create env variables for the jdks
+        # if: steps.cache-check.outputs.cache-hit != 'true'
+        run: |
+          JAVA_VERSION=8
+          while read line
+          do
+              echo $line
+              echo The counter is $COUNTER
+              echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
+              # Below only use for subsequent jobs, as the jdk build doesn't set these paths
+              # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
+              let JAVA_VERSION=JAVA_VERSION+1 
+          done < jdk_paths.txt
+
+      # Check ENV variables
+      - name: Check environmental variables
+        run: printenv | sort -f
+
+      # End Java restore section
+
+      # Restore the gradle cache
+      - name: Restore the gradle caches
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          # The docs say to use hashfiles, but gradle itself is smart enough to
+          # re-download dependencies if it couldn't resolve them.
+          # Because our gradle cache is _so big_, I think a 90% cache is far
+          # better than a 0% cache.
+          key: ${{ runner.os }}-gradle
+          restore-keys: |
+            ${{ runner.os }}-gradle
+
+      ## TESTING SECTION
+
+
+
+      # Replication of steps from ait README
+
+      - name: CD to ait dir.
+        run: |
+          cd ait/
+
+      - name: Replication of steps from ait README
+        run: |
+          echo "Find Python, check version"
+          whereis python
+          which python
+
+      - name: Is virtualenv installed?
+        run: |
+          echo "Check virtualenv"
+          virtualenv --help
+
+      - name: Install the ait requirements
+        run: |
+          ./bin/pip3 install -r conf/requirements.txt
+
+      # Print Environmental variables 
+      - name: Print Environmental variables (verify activate has been sourced)
+        run: |
+          printenv |  sort -f
+
+      # Print exported Environmental variables 
+      - name: Print exported Environmental variables (verify activate has been sourced)
+        run: |
+          env |  sort -f
+
+   # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
+   # cd workspace/JavaAgentBranch
+   # git checkout $BRANCH
+   # ./gradlew jar
+   # Activate environment and run AITs as described in above section
+   # . bin/activate
+   # source conf/testenv java
+   # conf/validate
+   # TEST_LOG_LEVEL=DEBUG ./bin/runtest.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async
