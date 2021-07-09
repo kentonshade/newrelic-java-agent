@@ -378,6 +378,9 @@ jobs:
 
       - name: Is virtualenv installed?
         run: |
+          echo "whereis pip or pip3"
+          whereis pip && which pip
+          pip install --upgrade virtualenv
           echo "Check virtualenv"
           virtualenv --help
 
