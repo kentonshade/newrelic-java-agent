@@ -393,8 +393,10 @@ jobs:
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
           ls -la bin/
+          echo "checking conf"
+          ls -la conf/
           . bin/activate
-          ./bin/pip3 install -r conf/requirements.txt
+          bin/pip3 install -r conf/requirements.txt
 
 
       # - name: Activate the environment 
