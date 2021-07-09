@@ -390,12 +390,16 @@ jobs:
         run: |
           virtualenv -p /usr/bin/python3.8 .
 
+      - name: Activate the environment 
+        run: |
+          . bin/activate
+
       - name: Install the ait requirements
         run: |
           cd ait/
           cat conf/requirements.txt
-          #./bin/pip3 install -r conf/requirements.txt
-          ./bin/pip install -r conf/requirements.txt
+          ./bin/pip3 install -r conf/requirements.txt
+          #./bin/pip install -r conf/requirements.txt
 
       - name: Run autoconfigure
         run: |
@@ -403,7 +407,7 @@ jobs:
 
       - name: Check local java config
         run: |
-          cat conf/java_local_config.ym
+          cat conf/java_local_config.yml
 
       # Print Environmental variables 
       - name: Print Environmental variables (verify activate has been sourced)
