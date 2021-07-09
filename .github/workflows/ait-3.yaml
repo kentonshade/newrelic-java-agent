@@ -382,7 +382,7 @@ jobs:
           echo "whereis pip or pip3"
           whereis pip && which pip
           whereis pip3 && which pip3
-          apt install virtualenv
+          sudo apt install virtualenv
           #pip install --upgrade virtualenv
           echo "Check virtualenv"
           virtualenv --help
