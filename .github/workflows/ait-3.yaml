@@ -400,6 +400,7 @@ jobs:
       - name: Install the ait requirements
         run: |
           cd agent-integration-tests/
+          ls -la bin/
           cat conf/requirements.txt
           bin/pip3 install -r conf/requirements.txt
           #./bin/pip install -r conf/requirements.txt
