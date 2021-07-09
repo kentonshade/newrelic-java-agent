@@ -2,6 +2,7 @@
 ## Testing the with the AIT workspace content in a test branch
 ## TODO: Need to include the gradle cache
 ## TODO: add cache check conditional to steps required to build cache
+## 07/09: now using gha branches throughout, use ait path for all commands required for ait
 name: GHA Migration - AIT 2
 
 on:
@@ -155,7 +156,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-agent-integration-tests
-          ref: testing
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: ait 
 
@@ -202,7 +203,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-ait-cache-1
-          ref: main
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: appcache1 
           lfs: true
@@ -221,7 +222,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-ait-cache-2
-          ref: main
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: appcache2
           lfs: true
@@ -240,7 +241,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-ait-cache-3
-          ref: main
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: appcache3 
           lfs: true
@@ -259,7 +260,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-ait-cache-4
-          ref: main
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: appcache4 
           lfs: true
@@ -384,7 +385,7 @@ jobs:
           # # VIRTUAL_ENV="ait-workspace"
           # # export VIRTUAL_ENV
           # # export to GHA env 
-          echo "VIRTUAL_ENV=${HOME}/ait-workspace" >> $GITHUB_ENV
+          echo "VIRTUAL_ENV=${HOME}/ait" >> $GITHUB_ENV
           ls -la $(echo ${VIRTUAL_ENV})
 
           # # _OLD_VIRTUAL_PATH="$PATH"
@@ -392,7 +393,7 @@ jobs:
           # # export PATH
           # # export to GHA PATH - this may need to be updated in a subsequent step.
           # NOTE ENV VARIABLES DECLARED IN A STEP CANNOT BE REFERENCED IN THE SAME STEP (as done above)
-          echo "${HOME}/ait-workspace/bin" >> $GITHUB_PATH
+          echo "${HOME}/ait/bin" >> $GITHUB_PATH
 
           # GHA - PYTHONHOME not set, omit this if?
           # unset PYTHONHOME if set (GHA - should not be set)
@@ -496,7 +497,7 @@ jobs:
       - name: Testing autoconfigure
         run: |
           echo "running conf/autoconfigure"
-          cd ait-workspace
+          cd ait
           JAVA8JRE=/opt/hostedtoolcache/jdk/8.0.292/x64 conf/autoconfigure
           cat conf/java_local_config.yml
 
@@ -518,7 +519,7 @@ jobs:
           echo "which version of python are we using?"
           which python && python --version  
           echo "current user is " $(whoami)
-          cd ait-workspace
+          cd ait
           TEST_LOG_LEVEL=DEBUG ./bin/runtest-gha.sh tests/java/functionality/server/websphere.py WebSphereTest.test_async 
 
    # Select branch in workspace (JavaAgentBranch is arbitrary, could be anything in workspace/…), check out your branch, build agent jar:
