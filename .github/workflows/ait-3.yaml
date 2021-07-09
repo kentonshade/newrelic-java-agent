@@ -369,6 +369,7 @@ jobs:
       - name: CD to ait dir.
         run: |
           cd ait/
+          ls -la 
 
       - name: Replication of steps from ait README
         run: |
@@ -380,13 +381,19 @@ jobs:
         run: |
           echo "whereis pip or pip3"
           whereis pip && which pip
+          whereis pip3 && which pip3
           pip install --upgrade virtualenv
           echo "Check virtualenv"
           virtualenv --help
 
+      - name: Create virtualenv
+        run: |
+          virtualenv -p /usr/bin/python3.8 .
+
       - name: Install the ait requirements
         run: |
           ./bin/pip3 install -r conf/requirements.txt
+          #./bin/pip install -r conf/requirements.txt
 
       # Print Environmental variables 
       - name: Print Environmental variables (verify activate has been sourced)
