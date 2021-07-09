@@ -153,7 +153,7 @@ jobs:
           repository: newrelic/java-agent-integration-tests
           ref: gha
           token: ${{ secrets.AITPAT }}
-          path: ait 
+          path: agent-integration-tests
 
       - name: Checkout AIT Jenkins workspace repository
         uses: actions/checkout@v2
@@ -177,7 +177,7 @@ jobs:
       - name: Validate AIT repo
         run: |
           ls -la 
-          cd ait
+          cd agent-integration-tests
           git status -sb 
           ls -la 
 
@@ -366,9 +366,9 @@ jobs:
 
       # Replication of steps from ait README
 
-      - name: CD to ait dir.
+      - name: CD to agent-integration-tests dir.
         run: |
-          cd ait/
+          cd agent-integration-tests/
           ls -la 
 
       - name: Replication of steps from ait README
@@ -382,17 +382,20 @@ jobs:
           echo "whereis pip or pip3"
           whereis pip && which pip
           whereis pip3 && which pip3
-          pip install --upgrade virtualenv
+          apt install virtualenv
+          #pip install --upgrade virtualenv
           echo "Check virtualenv"
           virtualenv --help
 
       - name: Create virtualenv
         run: |
           virtualenv -p /usr/bin/python3.8 .
+          echo "are the files created?"
+          ls -la bin/
 
       - name: Activate the environment 
         run: |
-          . bin/activate
+          . bin/activate #This file doesn't exist?
 
       - name: Install the ait requirements
         run: |
