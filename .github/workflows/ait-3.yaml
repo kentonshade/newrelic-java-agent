@@ -401,7 +401,7 @@ jobs:
         run: |
           cd agent-integration-tests/
           cat conf/requirements.txt
-          ./bin/pip3 install -r conf/requirements.txt
+          bin/pip3 install -r conf/requirements.txt
           #./bin/pip install -r conf/requirements.txt
 
       - name: Run autoconfigure
