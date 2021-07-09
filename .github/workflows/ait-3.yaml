@@ -387,23 +387,27 @@ jobs:
           echo "Check virtualenv"
           virtualenv --help
 
+      ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       - name: Create virtualenv
         run: |
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
           ls -la bin/
+          . bin/activate
+          ./bin/pip3 install -r conf/requirements.txt
 
-      - name: Activate the environment 
-        run: |
-          . bin/activate #This file doesn't exist?
 
-      - name: Install the ait requirements
-        run: |
-          cd agent-integration-tests/
-          ls -la bin/
-          cat conf/requirements.txt
-          bin/pip3 install -r conf/requirements.txt
-          #./bin/pip install -r conf/requirements.txt
+      # - name: Activate the environment 
+      #   run: |
+      #     . bin/activate #This file doesn't exist?
+
+      # - name: Install the ait requirements
+      #   run: |
+      #     cd agent-integration-tests/
+      #     ls -la bin/
+      #     cat conf/requirements.txt
+      #     bin/pip3 install -r conf/requirements.txt
+      #     #./bin/pip install -r conf/requirements.txt
 
       - name: Run autoconfigure
         run: |
