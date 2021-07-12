@@ -388,6 +388,7 @@ jobs:
           virtualenv --help
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
+      ## TODO: This should really be a custom action, too many commands
       - name: Create virtualenv
         run: |
           cd agent-integration-tests
@@ -398,6 +399,10 @@ jobs:
           ls -la conf/
           . bin/activate
           bin/pip3 install -r conf/requirements.txt
+          echo "run sutoconfigure"
+          conf/autoconfigure
+          echo "check local java config"
+          cat conf/java_local_config.yml
 
 
       # - name: Activate the environment 
@@ -412,13 +417,13 @@ jobs:
       #     bin/pip3 install -r conf/requirements.txt
       #     #./bin/pip install -r conf/requirements.txt
 
-      - name: Run autoconfigure
-        run: |
-          conf/autoconfigure
+      # - name: Run autoconfigure
+      #   run: |
+      #     conf/autoconfigure
 
-      - name: Check local java config
-        run: |
-          cat conf/java_local_config.yml
+      # - name: Check local java config
+      #   run: |
+      #     cat conf/java_local_config.yml
 
       # Print Environmental variables 
       - name: Print Environmental variables (verify activate has been sourced)
