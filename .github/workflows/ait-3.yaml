@@ -390,12 +390,10 @@ jobs:
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       - name: Create virtualenv
         run: |
-          ls -la 
+          cd agent-integration-tests
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
           ls -la bin/
-          echo "check dir structure"
-          ls -la 
           echo "checking conf"
           ls -la conf/
           . bin/activate
