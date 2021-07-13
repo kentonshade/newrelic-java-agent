@@ -366,6 +366,11 @@ jobs:
 
       # Replication of steps from ait README
 
+      # Is newrelicJar present in newrelic-agent/build
+      - name: Check for newrelicJar
+        run: |
+          ls -la newrelic-agent/build/
+
       - name: CD to agent-integration-tests dir.
         run: |
           cd agent-integration-tests/
