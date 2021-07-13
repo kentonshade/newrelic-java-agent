@@ -400,7 +400,7 @@ jobs:
           . bin/activate
           bin/pip3 install -r conf/requirements.txt
           echo "run sutoconfigure"
-          JAVA8JRE=/opt/hostedtoolcache/jdk/8.0.292/x64 conf/autoconfigure
+          JAVA8JRE=${ORG_GRADLE_PROJECT_jdk8} conf/autoconfigure
           echo "check local java config"
           cat conf/java_local_config.yml
 
