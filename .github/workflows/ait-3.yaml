@@ -368,6 +368,8 @@ jobs:
 
       # Is newrelicJar present in newrelic-agent/build
       - name: Build newrelicJar
+        env:
+          JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.292/x64"
         run: |
           ./gradlew jar 
           ls -la newrelic-agent/build/
