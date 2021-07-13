@@ -371,6 +371,7 @@ jobs:
         env:
           JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.292/x64"
         run: |
+          ls -la 
           ./gradlew jar 
           ls -la newrelic-agent/build/
 
