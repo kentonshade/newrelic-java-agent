@@ -8,6 +8,7 @@ apply plugin: 'scala'
 repositories {
     maven {
         jcenter()
+        mavenCentral()
     }
 }
 
@@ -17,7 +18,7 @@ buildscript {
     }
     repositories {
         jcenter()
-        mavenCentral()
+        https://cje2.dev.cray.com/teams-pubs-team/user/shade/my-views/view/all/job/pubs-team/job/sma-docs/
     }
 }
 
