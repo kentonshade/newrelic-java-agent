@@ -16,7 +16,9 @@ buildscript {
         classpath 'com.typesafe.play:routes-compiler_2.11:2.6.0'
     }
     repositories {
+            maven {
         url 'https://repo.maven.apache.org/maven2/'
+            }
     }
 }
 
