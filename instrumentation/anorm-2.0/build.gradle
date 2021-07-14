@@ -2,7 +2,7 @@ apply plugin: 'scala'
 
 repositories {
     maven {
-        jcenter()
+        url 'https://repo.maven.apache.org/maven2/'
     }
 }
 
