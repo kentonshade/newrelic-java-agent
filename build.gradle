@@ -34,11 +34,18 @@ idea.module {
 }
 
 subprojects {
+    // repositories {
+    //     mavenLocal()
+    //     mavenCentral()
+    //     jcenter()
+    // }
+    //GHA
     repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
+        maven {
+            url 'https://repo.maven.apache.org/maven2/'
+        }
     }
+
 
     def isJavaProject = ![
             'instrumentation',  // is a parent project
