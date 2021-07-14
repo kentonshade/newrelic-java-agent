@@ -19,6 +19,8 @@ plugins {
 
 //GHA
 repositories {
+    mavenCentral()
+    jcenter()
     maven {
         url 'https://repo.maven.apache.org/maven2/'
     }

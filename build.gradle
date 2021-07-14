@@ -41,6 +41,9 @@ subprojects {
     // }
     //GHA
     repositories {
+        mavenCentral()
+        jcenter()
+        mavenLocal()
         maven {
             url 'https://repo.maven.apache.org/maven2/'
         }

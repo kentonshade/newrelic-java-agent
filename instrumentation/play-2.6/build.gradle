@@ -6,6 +6,8 @@ import scala.collection.JavaConversions
 apply plugin: 'scala'
 
 repositories {
+    mavenCentral()
+    jcenter()
     maven {
         url 'https://repo.maven.apache.org/maven2/'
     }
@@ -21,6 +23,8 @@ buildscript {
     // }
     //GHA
     repositories {
+        mavenCentral()
+        jcenter()
         maven {
             url 'https://repo.maven.apache.org/maven2/'
         }
