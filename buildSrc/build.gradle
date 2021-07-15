@@ -13,7 +13,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
     jcenter()
-    mavenlocal()
+    // mavenlocal()
     maven {
         url 'https://repo.maven.apache.org/maven2/'
     }
