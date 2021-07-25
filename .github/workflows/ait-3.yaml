@@ -399,6 +399,7 @@ jobs:
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
       - name: Create virtualenv
+        if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
           virtualenv -p /usr/bin/python3.8 .
