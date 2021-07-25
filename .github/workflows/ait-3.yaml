@@ -422,7 +422,7 @@ jobs:
           conf/autoconfigure
           echo "check local java config"
           cat conf/java_local_config.yml
-          sed 's:/home/runner/work/newrelic-java-agent/newrelic-java-agent:/home/runner/work/newrelic-java-agent/where-is-it:' conf/java_local_config.yml
+          sed 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/NewRelicJar|' conf/java_local_config.yml
           cat conf/java_local_config.yml
 
 
