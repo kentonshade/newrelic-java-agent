@@ -402,6 +402,7 @@ jobs:
         if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
+          sudo apt install virtualenv
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
           ls -la bin/
