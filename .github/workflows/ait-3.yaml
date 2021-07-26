@@ -427,7 +427,7 @@ jobs:
           JAVA14JRE=${ORG_GRADLE_PROJECT_jdk14} \
           JAVA15JRE=${ORG_GRADLE_PROJECT_jdk15} \
           conf/autoconfigure
-          . conf/testenv java
+          # . conf/testenv java
           echo "check local java config"
           cat conf/java_local_config.yml
           sed 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/build/newrelicJar|' conf/java_local_config.yml
