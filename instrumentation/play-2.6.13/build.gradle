@@ -5,14 +5,6 @@ import scala.collection.JavaConversions
 
 apply plugin: 'scala'
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url 'https://repo.maven.apache.org/maven2/'
-    }
-}
-
 buildscript {
     dependencies {
         classpath 'com.typesafe.play:routes-compiler_2.11:2.6.0'
