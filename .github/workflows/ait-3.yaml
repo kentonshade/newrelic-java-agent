@@ -362,6 +362,11 @@ jobs:
 
       ## TESTING SECTION
 
+      - name: Check new Java home path
+        run: |
+          echo "Current JAVA_HOME is ${JAVA_HOME}"
+          ls -la /opt/hostedtoolcache/jdk/8.0.292/x64/bin/
+
 
 
       # Replication of steps from ait README
