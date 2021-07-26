@@ -429,10 +429,12 @@ jobs:
           conf/autoconfigure
           echo "check local java config"
           cat conf/java_local_config.yml
-          sed 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/NewRelicJar|' conf/java_local_config.yml
+          sed 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/build/newrelicJar|' conf/java_local_config.yml
           cat conf/java_local_config.yml
           echo "shell variables:"
           set | sort -f
+          echo "run a test"
+          ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
 
 
 
