@@ -374,9 +374,10 @@ jobs:
       # Is newrelicJar present in newrelic-agent/build
       # TO DO: Below version number has to be dynamic
       - name: Build newrelicJar
-        env:
-          JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
+        # env:
+        #   JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
         run: |
+          echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
           ls -la 
           ./gradlew clean jar --parallel
           ls -la newrelic-agent/build/
