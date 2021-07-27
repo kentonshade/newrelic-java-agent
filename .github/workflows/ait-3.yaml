@@ -409,8 +409,8 @@ jobs:
         run: |
           cd agent-integration-tests
           echo "conf/testenv complains of the path below - creating symlink for now"
-          sudo ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps 
-          sudo ln -s ${GITHUB_WORKSPACE}/newrelic-agent/build/newrelicjar/newrelic.jar ${GITHUB_WORKSPACE}/newrelic.jar
+          ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps 
+          ln -s ${GITHUB_WORKSPACE}/newrelic-agent/build/newrelicJar/newrelic.jar ${GITHUB_WORKSPACE}/newrelic.jar
           echo "still complains of file not found"
           ls -la ${GITHUB_WORKSPACE}
           sudo apt install virtualenv
@@ -439,8 +439,8 @@ jobs:
           echo "shell variables:"
           set | sort -f
           echo "run a test"
-          # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
-          ./bin/runtest.sh tests/java/functionality/server/tomcat.py
+          ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
+          # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
 
 
 
