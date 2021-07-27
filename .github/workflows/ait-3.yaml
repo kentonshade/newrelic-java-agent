@@ -436,7 +436,8 @@ jobs:
           echo "shell variables:"
           set | sort -f
           echo "run a test"
-          ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
+          # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
+          ./bin/runtest.sh tests/java/functionality/server/tomcat.py
 
 
 
