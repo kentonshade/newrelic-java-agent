@@ -409,7 +409,9 @@ jobs:
         if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
+          echo "conf/testenv complains of the path below - creating symlink for now"
           sudo ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps 
+          sudo ln -s ${GITHUB_WORKSPACE}/newrelic-agent/build/newrelicjar/newrelic.jar ${GITHUB_WORKSPACE}/newrelic.jar
           sudo apt install virtualenv
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
