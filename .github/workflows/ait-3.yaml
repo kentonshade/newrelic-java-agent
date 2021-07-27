@@ -378,6 +378,7 @@ jobs:
         #   JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
         run: |
           echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
+          echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
           ls -la 
           ./gradlew clean jar --parallel
           ls -la newrelic-agent/build/
@@ -387,21 +388,19 @@ jobs:
           cd agent-integration-tests/
           ls -la 
 
-      - name: Replication of steps from ait README
-        run: |
-          echo "Find Python, check version"
-          whereis python
-          which python
+      # - name: Replication of steps from ait README
+      #   run: |
+      #     echo "Find Python, check version"
+      #     whereis python
+      #     which python
 
-      - name: Is virtualenv installed?
-        run: |
-          echo "whereis pip or pip3"
-          whereis pip && which pip
-          whereis pip3 && which pip3
-          sudo apt install virtualenv
-          #pip install --upgrade virtualenv
-          echo "Check virtualenv"
-          virtualenv --help
+      # - name: Is virtualenv installed?
+      #   run: |
+      #     # echo "whereis pip or pip3"
+      #     # whereis pip && which pip
+      #     # whereis pip3 && which pip3
+      #     # sudo apt install virtualenv
+      #     # pip install --upgrade virtualenv
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
@@ -412,6 +411,8 @@ jobs:
           echo "conf/testenv complains of the path below - creating symlink for now"
           sudo ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps 
           sudo ln -s ${GITHUB_WORKSPACE}/newrelic-agent/build/newrelicjar/newrelic.jar ${GITHUB_WORKSPACE}/newrelic.jar
+          echo "still complains of file not found"
+          ls -la ${GITHUB_WORKSPACE}
           sudo apt install virtualenv
           virtualenv -p /usr/bin/python3.8 .
           echo "are the files created?"
