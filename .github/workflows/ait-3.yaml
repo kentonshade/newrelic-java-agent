@@ -441,7 +441,7 @@ jobs:
           echo "run a test"
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
-          ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
 
 
 
