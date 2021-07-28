@@ -469,7 +469,7 @@ jobs:
         with:
           name: ait-testing-artifacts
           path: |
-            agent-integrations-tests/testing-artifacts/*
+            agent-integration-tests/testing-artifacts/*
 
 
 
