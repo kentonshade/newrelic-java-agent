@@ -280,7 +280,8 @@ jobs:
           mv appcache3/* apps/
           mv appcache4/* apps/
           cd apps
-          ls -la 
+          ls -la
+          ls -la java_test_webapp-master/
           cd ../ 
 
       ## restore jdk cache dir here
