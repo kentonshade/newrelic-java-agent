@@ -438,31 +438,31 @@ jobs:
           cat conf/java_local_config.yml
           echo "shell variables:"
           set | sort -f
-
+          echo "GENERATE ARTIFACTS"
           ## artifacts section for testing
           mkdir testing-artifacts
+          ls -la
           touch testing-artifacts/shell-variables.txt
           touch testing-artifacts/env-variables.txt
           set | sort -f > testing-artifacts/shell-variables.txt
           printenv | sort -f > testing-artifacts/env-variables.txt
           cp conf/java_local_config.yml testing-artifacts/ 
+          ls -la testing-artifacts/ 
+          pwd
           ## End testing artifacts section
-
           echo "run a test"
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
+          # TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
-        if: ${{ failure() }}
+        if: ${{ failure() || success() }}
         uses: actions/upload-artifact@v2
         with:
           name: ait-testing-artifacts
           path: |
             agent-integrations-tests/testing-artifacts/*
-            # path/output/test-results
-            # !path/**/*.tmp
 
 
 
