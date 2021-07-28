@@ -437,7 +437,7 @@ jobs:
           echo "check local java config"
           cat conf/java_local_config.yml
           echo "Changing java_agent_dev_root values"
-          sed -i 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/build/newrelicJar|' conf/java_local_config.yml
+          sed -i 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent/newrelic-agent/build/newrelicJar|' conf/java_local_config.yml
           echo "verifying values have been changed"
           cat conf/java_local_config.yml
           echo "shell variables:"
