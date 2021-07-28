@@ -437,7 +437,7 @@ jobs:
           echo "check local java config"
           cat conf/java_local_config.yml
           echo "Changing java_agent_dev_root values"
-          sed 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/build/newrelicJar|' conf/java_local_config.yml
+          sed -i 's|java_agent_dev_root: /home/runner/work/newrelic-java-agent/newrelic-java-agent|java_agent_dev_root: /home/runner/work/newrelic-java-agent/build/newrelicJar|' conf/java_local_config.yml
           echo "verifying values have been changed"
           cat conf/java_local_config.yml
           echo "shell variables:"
@@ -460,7 +460,7 @@ jobs:
           echo "RUN THE TESTS"
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
-          # TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
