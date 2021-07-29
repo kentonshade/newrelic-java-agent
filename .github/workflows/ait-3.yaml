@@ -405,7 +405,7 @@ jobs:
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
-      - name: Create virtualenv
+      - name: Create virtualenv and run some AITs 
         if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
@@ -465,6 +465,8 @@ jobs:
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/tomcat.py
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/jetty.py 
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
