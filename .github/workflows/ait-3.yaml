@@ -416,6 +416,8 @@ jobs:
           ls -la ${GITHUB_WORKSPACE}
           sudo apt install virtualenv
           virtualenv -p /usr/bin/python3.8 .
+          echo "What version of maven are we using?"
+          mvn --version
           echo "are the files created?"
           ls -la bin/
           echo "checking conf"
