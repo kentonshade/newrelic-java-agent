@@ -147,6 +147,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      ## Ongoing tests with artifactory dependecies
       - name: Checkout AIT repo test
         uses: actions/checkout@v2
         with:
