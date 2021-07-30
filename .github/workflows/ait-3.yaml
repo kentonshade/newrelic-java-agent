@@ -152,7 +152,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-agent-integration-tests
-          ref: gha2
+          ref: gha
           token: ${{ secrets.AITPAT }}
           path: agent-integration-tests
 
