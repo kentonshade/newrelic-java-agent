@@ -152,7 +152,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-agent-integration-tests
-          ref: gha-before-merge
+          ref: gha-post-pr
           token: ${{ secrets.AITPAT }}
           path: agent-integration-tests
 
@@ -465,11 +465,15 @@ jobs:
           echo "RUN THE TESTS"
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
           # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
+          echo "RUNNING RULES.PY"
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
+          echo "RUNNING TOMCAT.PY"
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/tomcat.py
           # Below fails
-          # TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/jetty.py 
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/datastore/datastores.py 
+          # TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/jetty.py
+          echo "RUNNING DATASTORES.PY"  
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/datastore/datastores.py
+          echo "RUNNING REDIS"
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/datastore/redis.py 
 
       # Capture Testing Artifacts
