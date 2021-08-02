@@ -87,6 +87,13 @@ jobs:
         with:
           java-version: 15
 
+      # Install 16
+      - name: Set up Java 16
+        if: steps.cache-check.outputs.cache-hit != 'true'
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 16
+
       # Check contents of cache path
       - name: check cache dir
         # if: steps.cache-check.outputs.cache-hit == 'true'
@@ -97,7 +104,7 @@ jobs:
           echo "checking for jdk_paths.txt: "
           ls -la
           echo "checking for file in home: "
-          ls -la ~/       
+          ls -la ~/
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -120,7 +127,7 @@ jobs:
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
               # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
-              let JAVA_VERSION=JAVA_VERSION+1 
+              let JAVA_VERSION=JAVA_VERSION+1
           done < jdk_paths.txt
 
       # Check ENV variables
@@ -144,7 +151,7 @@ jobs:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
       matrix:
-        java-version: [8, 9, 10, 11, 12, 13, 14, 15]
+        java-version: [8, 9, 10, 11, 12, 13, 14, 15, 16]
     steps:
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
@@ -179,7 +186,7 @@ jobs:
           echo "checking for jdk_paths.txt: "
           ls -la
           echo "checking for file in home: "
-          ls -la ~/    
+          ls -la ~/
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -202,12 +209,12 @@ jobs:
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
               # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
-              let JAVA_VERSION=JAVA_VERSION+1 
+              let JAVA_VERSION=JAVA_VERSION+1
           done < jdk_paths.txt
 
       # Check ENV variables
       - name: Check environmental variables
-        run: printenv | sort -f 
+        run: printenv | sort -f
 
       # Install Java version for this matrix run
       - name: Set up Java ${{ matrix.java-version }}
@@ -263,7 +270,7 @@ jobs:
 
       # GHA run functional tests
       # Run the build.
-      - name: Run functional tests against version defined in matrix  
+      - name: Run functional tests against version defined in matrix
         run: |
           # Changed log level to --warn from --info
           ./gradlew --console=plain --parallel functional_test:test -Ptest${{ matrix.java-version }} --continue --warn
@@ -275,7 +282,7 @@ jobs:
         with:
           name: unit-tests-results-java-${{ matrix.java-version }}
           path: |
-            functional_test/build/reports/tests/* 
+            functional_test/build/reports/tests/*
             # path/output/test-results
             # !path/**/*.tmp
 
@@ -283,11 +290,11 @@ jobs:
   testing_job_dependence: ## Test Only
     needs:  matrix_functional_all_versions
     runs-on: ubuntu-latest
-    steps:        
-      # Print Environmental variables 
+    steps:
+      # Print Environmental variables
       - name: Print Environmental variables (verify activate has been sourced)
         run: |
-          printenv    
+          printenv
 
       - name: Cache test directory
         uses: actions/cache@v2
@@ -326,5 +333,5 @@ jobs:
       - name: Check that all the Java versions are installed
         run: |
           pwd
-          ls -la 
+          ls -la
           whereis java
