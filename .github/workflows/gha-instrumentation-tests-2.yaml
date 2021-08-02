@@ -291,6 +291,18 @@ jobs:
         run: find instrumentation -name "*.jar"
       ## End AWS jars - plan to cache (check for cache, restore if required)
 
+      # Is newrelicJar present in newrelic-agent/build
+      # TO DO: Below version number has to be dynamic
+      - name: Build newrelicJar
+        # env:
+        #   JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
+        run: |
+          echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
+          echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
+          ls -la
+          ./gradlew clean jar --parallel
+          ls -la newrelic-agent/build/
+
       # GHA run instrumentation tests
       # Run the build.
       - name: Run instrumentation tests for each Java version as defined in the matrix
