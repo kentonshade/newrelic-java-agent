@@ -227,9 +227,10 @@ jobs:
             ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          key: ${{ runner.os }}-build-${{ matrix.func_test }}-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
           # key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
+            ${{ runner.os }}-build-${{ matrix.func_test }}-${{ env.cache-name }}-
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
