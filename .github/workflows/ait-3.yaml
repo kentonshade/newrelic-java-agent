@@ -96,7 +96,7 @@ jobs:
           echo "checking for jdk_paths.txt: "
           ls -la
           echo "checking for file in home: "
-          ls -la ~/       
+          ls -la ~/
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -119,7 +119,7 @@ jobs:
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
               # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
-              let JAVA_VERSION=JAVA_VERSION+1 
+              let JAVA_VERSION=JAVA_VERSION+1
           done < jdk_paths.txt
 
       # Check ENV variables
@@ -139,11 +139,14 @@ jobs:
     needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    # strategy:
-    #   ##max-parallel: 1 ## used to force sequential
-    #   fail-fast: false
-    #   matrix:
-    #     java-version: [8, 9, 10, 11, 12, 13, 14, 15]
+    env:
+      java_func_path: "tests/java/functionality"
+    strategy:
+      ##max-parallel: 1 ## used to force sequential
+      fail-fast: false
+      matrix:
+        # functional_path: [basic_features, datastore]
+        func_test: ["auto_app_naming.py", "cat.py", "classloading.py", "commands.py", "connect_opt.py", "env_vars.py", "errors.py", "extensions.py"]
     steps:
       - uses: actions/checkout@v2
 
@@ -156,44 +159,10 @@ jobs:
           token: ${{ secrets.AITPAT }}
           path: agent-integration-tests
 
-      - name: Checkout AIT Jenkins workspace repository
-        uses: actions/checkout@v2
-        with:
-          repository: newrelic/java-ait-workspace
-          ref: main
-          token: ${{ secrets.AITPAT }}
-          path: ait-workspace     
-
-      # Check for GH CLI
-      - name: GitHub CLI installed?
-        run: |
-          gh --version 
-
       # Print Environmental variables
       - name: Print Environmental variables
         run: |
           printenv | sort -f
-
-      # Validate repo
-      - name: Validate AIT repo
-        run: |
-          ls -la 
-          cd agent-integration-tests
-          git status -sb 
-          ls -la 
-
-      # Validate repo
-      - name: Validate AIT Workspace repo
-        run: |
-          ls -la 
-          cd ait-workspace 
-          git status -sb 
-          ls -la 
-          echo "check contents of conf and bin directories"
-          ls -la bin/
-          echo "and conf..."
-          ls -la conf/
-          cd ../
 
       - name: Checkout Cache 1
         uses: actions/checkout@v2
@@ -201,18 +170,8 @@ jobs:
           repository: newrelic/java-ait-cache-1
           ref: gha
           token: ${{ secrets.AITPAT }}
-          path: appcache1 
+          path: appcache1
           lfs: true
-
-      # Validate repo
-      - name: Validate cache 1
-        run: |
-          ls -la 
-          cd appcache1 
-          git status -sb
-          git remote -v
-          ls -la 
-          cd ../ 
 
       - name: Checkout Cache 2
         uses: actions/checkout@v2
@@ -223,34 +182,14 @@ jobs:
           path: appcache2
           lfs: true
 
-      # Validate repo
-      - name: Validate cache 2
-        run: |
-          ls -la 
-          cd appcache2 
-          git status -sb
-          git remote -v
-          ls -la 
-          cd ../ 
-
       - name: Checkout Cache 3
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-ait-cache-3
           ref: gha
           token: ${{ secrets.AITPAT }}
-          path: appcache3 
+          path: appcache3
           lfs: true
-
-      # Validate repo
-      - name: Validate cache 3
-        run: |
-          ls -la 
-          cd appcache3 
-          git status -sb
-          git remote -v
-          ls -la 
-          cd ../ 
 
       - name: Checkout Cache 4
         uses: actions/checkout@v2
@@ -258,23 +197,13 @@ jobs:
           repository: newrelic/java-ait-cache-4
           ref: gha
           token: ${{ secrets.AITPAT }}
-          path: appcache4 
+          path: appcache4
           lfs: true
 
-      # Validate repo
-      - name: Validate cache 4
-        run: |
-          ls -la 
-          cd appcache4 
-          git status -sb
-          git remote -v
-          ls -la 
-          cd ../ 
-
       # Consolidate caches into one directory
-      - name: Consolidate caches
+      - name: Consolidate caches into Apps directory
         run: |
-          ls -la 
+          ls -la
           mkdir apps
           mv appcache1/* apps/
           mv appcache2/* apps/
@@ -283,7 +212,7 @@ jobs:
           cd apps
           ls -la
           ls -la java_test_webapp-master/
-          cd ../ 
+          cd ../
 
       ## restore jdk cache dir here
 
@@ -304,18 +233,6 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-
-      # Check contents of cache path
-      - name: check cache dir
-        # if: steps.cache-check.outputs.cache-hit == 'true'
-        run: |
-          pwd
-          echo "contents of cache dir: "
-          ls -la /opt/hostedtoolcache/jdk/
-          echo "checking for jdk_paths.txt: "
-          ls -la
-          echo "checking for file in home: "
-          ls -la ~/    
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -338,7 +255,7 @@ jobs:
               echo "ORG_GRADLE_PROJECT_jdk$JAVA_VERSION=/opt/hostedtoolcache/jdk/$line/x64" >> $GITHUB_ENV
               # Below only use for subsequent jobs, as the jdk build doesn't set these paths
               # echo "/opt/hostedtoolcache/jdk/$line/x64/bin" >> $GITHUB_PATH
-              let JAVA_VERSION=JAVA_VERSION+1 
+              let JAVA_VERSION=JAVA_VERSION+1
           done < jdk_paths.txt
 
       # Check ENV variables
@@ -354,10 +271,6 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          # The docs say to use hashfiles, but gradle itself is smart enough to
-          # re-download dependencies if it couldn't resolve them.
-          # Because our gradle cache is _so big_, I think a 90% cache is far
-          # better than a 0% cache.
           key: ${{ runner.os }}-gradle
           restore-keys: |
             ${{ runner.os }}-gradle
@@ -370,7 +283,6 @@ jobs:
           ls -la /opt/hostedtoolcache/jdk/8.0.302/x64
 
 
-
       # Replication of steps from ait README
 
       # Is newrelicJar present in newrelic-agent/build
@@ -381,37 +293,23 @@ jobs:
         run: |
           echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
           echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
-          ls -la 
+          ls -la
           ./gradlew clean jar --parallel
           ls -la newrelic-agent/build/
 
       - name: CD to agent-integration-tests dir.
         run: |
           cd agent-integration-tests/
-          ls -la 
-
-      # - name: Replication of steps from ait README
-      #   run: |
-      #     echo "Find Python, check version"
-      #     whereis python
-      #     which python.
-
-      # - name: Is virtualenv installed?
-      #   run: |
-      #     # echo "whereis pip or pip3"
-      #     # whereis pip && which pip
-      #     # whereis pip3 && which pip3
-      #     # sudo apt install virtualenv
-      #     # pip install --upgrade virtualenv
+          ls -la
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
-      - name: Create virtualenv and run some AITs 
+      - name: Create virtualenv and run AITs - ${{ matrix.func_test}}
         if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
           echo "conf/testenv complains of the path below - creating symlink for now"
-          ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps 
+          ln -s ${GITHUB_WORKSPACE}/apps /home/runner/apps
           ln -s ${GITHUB_WORKSPACE}/newrelic-agent/build/newrelicJar/newrelic.jar ${GITHUB_WORKSPACE}/newrelic.jar
           echo "still complains of file not found"
           ls -la ${GITHUB_WORKSPACE}
@@ -456,25 +354,15 @@ jobs:
           touch testing-artifacts/env-variables.txt
           set | sort -f > testing-artifacts/shell-variables.txt
           printenv | sort -f > testing-artifacts/env-variables.txt
-          cp conf/java_local_config.yml testing-artifacts/ 
+          cp conf/java_local_config.yml testing-artifacts/
           echo "check the contents of testing-artifacts"
-          ls -la testing-artifacts/ 
+          ls -la testing-artifacts/
           echo "are we still in agent-integration-tests?"
           pwd
           ## End testing artifacts section
           echo "RUN THE TESTS"
-          # ./bin/runtest.sh tests/java/functionality/server/tomcat.py TomcatTest.test_tomcat
-          # ./bin/runtest.sh tests/java/functionality/server/tomcat.py
-          echo "RUNNING RULES.PY"
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/basic_features/rules.py
-          echo "RUNNING TOMCAT.PY"
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/tomcat.py
-          # Below fails
-          # TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/server/jetty.py
-          echo "RUNNING DATASTORES.PY"  
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/datastore/datastores.py
-          echo "RUNNING REDIS"
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh tests/java/functionality/datastore/redis.py 
+          echo "Running ${{ matrix.func_test }}"
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh ${java_func_path}/basic_features/${{ matrix.func_test }}
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
@@ -487,7 +375,7 @@ jobs:
 
 
 
-      # - name: Activate the environment 
+      # - name: Activate the environment
       #   run: |
       #     . bin/activate #This file doesn't exist?
 
@@ -507,12 +395,12 @@ jobs:
       #   run: |
       #     cat conf/java_local_config.yml
 
-      # Print Environmental variables 
+      # Print Environmental variables
       - name: Print Environmental variables (verify activate has been sourced)
         run: |
           printenv |  sort -f
 
-      # Print exported Environmental variables 
+      # Print exported Environmental variables
       - name: Print exported Environmental variables (verify activate has been sourced)
         run: |
           env |  sort -f
