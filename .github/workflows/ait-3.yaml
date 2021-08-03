@@ -146,7 +146,12 @@ jobs:
       fail-fast: false
       matrix:
         # functional_path: [basic_features, datastore]
-        func_test: ["auto_app_naming.py", "cat.py", "classloading.py", "commands.py", "connect_opt.py", "env_vars.py", "errors.py", "extensions.py"]
+        # func_test: ["auto_app_naming.py", "cat.py", "classloading.py", "commands.py", "connect_opt.py", "env_vars.py", "errors.py", "extensions.py, external.py, inf_tracing_test.py, key_tx.py, report_period.py, rules.py"]
+        func_test:
+          - auto_app_naming.py
+          - cat.py
+          - classloading.py
+          - commands.py 
     steps:
       - uses: actions/checkout@v2
 
@@ -163,11 +168,6 @@ jobs:
       - name: Print Environmental variables
         run: |
           printenv | sort -f
-
-      # Check hostedtoolcache -  This is BEFORE downloading of the cache generated in previous job.
-      - name: Check hostedtoolcache for JDKs already available
-        run: |
-          ls -1v /opt/hostedtoolcache/jdk/
 
       - name: Checkout Cache 1
         uses: actions/checkout@v2
