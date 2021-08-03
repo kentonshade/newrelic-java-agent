@@ -273,7 +273,7 @@ jobs:
       # Rewrite gradle.properties
       - name: set gradle.properties
         run: |
-          sed -i -e 's|jdk8=/opt/hostedtoolcache/jdk/8.0.292/x64|jdk8=${ORG_GRADLE_PROJECT_jdk8}|' gradle.properties
+          sed -i -e "s|jdk8=/opt/hostedtoolcache/jdk/8.0.292/x64|jdk8=${ORG_GRADLE_PROJECT_jdk8}|" gradle.properties
           cat gradle.properties
 
       # IS THIS IMPACTING TESTS?
