@@ -139,19 +139,33 @@ jobs:
     needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
+    # Determine if easier to make the env strings below part of the matrix
     env:
       java_func_path: "tests/java/functionality"
+      java_func_type: "basic_features"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
       matrix:
         # functional_path: [basic_features, datastore]
-        # func_test: ["auto_app_naming.py", "cat.py", "classloading.py", "commands.py", "connect_opt.py", "env_vars.py", "errors.py", "extensions.py, external.py, inf_tracing_test.py, key_tx.py, report_period.py, rules.py"]
-        func_test:
+        func_basic_features:
           - auto_app_naming.py
           - cat.py
           - classloading.py
-          - commands.py 
+          - commands.py
+          - connect_opt.py
+          - env_vars.py
+          - errors.py
+          - extensions.py
+          - external.py
+          - inf_tracing_test.py
+          - key_tx.py
+          - report_period.py
+          - rules.py
+          - spans.py
+          - thread_sampler.py
+          - trans_traces.py
+          - uri_names.py
     steps:
       - uses: actions/checkout@v2
 
@@ -169,6 +183,7 @@ jobs:
         run: |
           printenv | sort -f
 
+      # Apps repos/caches - this prpcess could be a candidate for custom action
       - name: Checkout Cache 1
         uses: actions/checkout@v2
         with:
@@ -226,16 +241,16 @@ jobs:
         id: cache-check
         uses: actions/cache@v2
         env:
-          cache-name: cache-jdk-dir ## See if this works and includes all versions
+          cache-name: cache-jdk-dir # See if this works and includes all versions
         with:
           path: |
             ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/jdk/
-          key: ${{ runner.os }}-build-${{ matrix.func_test }}-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
+          key: ${{ runner.os }}-build-${{ matrix.func_basic_features }}-${{ env.cache-name }}-${{ hashFiles('**/*', '**/*.txt', '**/jdk_paths.txt') }} ## Explore extensions to cache if no lock file
           # key: ${{ runner.os }}-build-${{ env.cache-name }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ matrix.func_test }}-${{ env.cache-name }}-
+            ${{ runner.os }}-build-${{ matrix.func_basic_features }}-${{ env.cache-name }}-
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
@@ -310,7 +325,7 @@ jobs:
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
-      - name: Create virtualenv and run AITs - ${{ matrix.func_test}}
+      - name: Create virtualenv and run AITs - ${{ matrix.func_basic_features}}
         if: ${{ failure() || success() }}
         run: |
           cd agent-integration-tests
@@ -367,8 +382,8 @@ jobs:
           pwd
           ## End testing artifacts section
           echo "RUN THE TESTS"
-          echo "Running ${{ matrix.func_test }}"
-          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh ${java_func_path}/basic_features/${{ matrix.func_test }}
+          echo "Running ${{ matrix.func_basic_features }}"
+          TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 ./bin/runtest.sh ${java_func_path}/${java_func_type}/${{ matrix.func_basic_features }}
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts

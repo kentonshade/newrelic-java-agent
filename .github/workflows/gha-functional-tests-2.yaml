@@ -230,27 +230,27 @@ jobs:
         run: |
           echo "Current $JAVA_HOME = " ${JAVA_HOME}
 
-      ## Custom Cache Test
-      - name: Touch a file and save to a cache directory
-        run: |
-          mkdir test-cache-dir
-          touch test-cache-dir/ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}.txt
-          ls -la
-          cd test-cache-dir
-          ls -la
-          cd ../
+      # ## Custom Cache Test
+      # - name: Touch a file and save to a cache directory
+      #   run: |
+      #     mkdir test-cache-dir
+      #     touch test-cache-dir/ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}.txt
+      #     ls -la
+      #     cd test-cache-dir
+      #     ls -la
+      #     cd ../
 
-      - name: Cache test directory
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-test-dir
-        with:
-          path: test-cache-dir
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }} ## Explore extensions to cache if no lock file
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache test directory
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-test-dir
+      #   with:
+      #     path: test-cache-dir
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }} ## Explore extensions to cache if no lock file
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       # Restore the gradle cache
       - name: Restore the gradle caches
@@ -269,6 +269,12 @@ jobs:
 
 
       # GHA run functional tests
+
+      # Rewrite gradle.properties
+      - name: set gradle.properties
+        run: |
+          sed -i -e 's|jdk8=/opt/hostedtoolcache/jdk/8.0.292/x64|jdk8=${ORG_GRADLE_PROJECT_jdk8}|' gradle.properties
+          cat gradle.properties
 
       # IS THIS IMPACTING TESTS?
       - name: Build newrelicJar
