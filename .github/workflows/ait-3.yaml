@@ -33,57 +33,65 @@ jobs:
       # Install 8
       - name: Set up Java 8
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 8
 
       # Install 9
       - name: Set up Java 9
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 9
 
       # Install 10
       - name: Set up Java 10
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 10
 
       # Install 11
       - name: Set up Java 11
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 11
 
       # Install 12
       - name: Set up Java 12
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 12
 
       # Install 13
       - name: Set up Java 13
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 13
 
       # Install 14
       - name: Set up Java 14
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 14
 
       # Install 15
       - name: Set up Java 15
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 15
 
       # Check contents of cache path

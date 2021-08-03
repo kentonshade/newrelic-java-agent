@@ -34,64 +34,73 @@ jobs:
       # Install 8
       - name: Set up Java 8
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 8
 
       # Install 9
       - name: Set up Java 9
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 9
 
       # Install 10
       - name: Set up Java 10
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 10
 
       # Install 11
       - name: Set up Java 11
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 11
 
       # Install 12
       - name: Set up Java 12
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 12
 
       # Install 13
       - name: Set up Java 13
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 13
 
       # Install 14
       - name: Set up Java 14
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 14
 
       # Install 15
       - name: Set up Java 15
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 15
 
       # Install 16
       - name: Set up Java 16
         if: steps.cache-check.outputs.cache-hit != 'true'
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: 16
 
       # Check contents of cache path
@@ -219,8 +228,9 @@ jobs:
 
       # install of matrix Java versions
       - name: Set up Java ${{ matrix.java-version }}
-        uses: actions/setup-java@v1.4.3
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
 
       # Set current default jdk version
@@ -234,26 +244,26 @@ jobs:
           whereis java #determine dir to cache
 
       ## Custom Cache Test
-      - name: Touch a file and save to a cache directory
-        run: |
-          mkdir test-cache-dir
-          touch test-cache-dir/ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}.txt
-          ls -la
-          cd test-cache-dir
-          ls -la
-          cd ../
+      # - name: Touch a file and save to a cache directory
+      #   run: |
+      #     mkdir test-cache-dir
+      #     touch test-cache-dir/ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}.txt
+      #     ls -la
+      #     cd test-cache-dir
+      #     ls -la
+      #     cd ../
 
-      - name: Cache test directory
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-test-dir
-        with:
-          path: test-cache-dir
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }} ## Explore extensions to cache if no lock file
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache test directory
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-test-dir
+      #   with:
+      #     path: test-cache-dir
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }} ## Explore extensions to cache if no lock file
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       # Restore the gradle cache
       - name: Restore the gradle caches
@@ -283,6 +293,20 @@ jobs:
           ls -la newrelic-agent/build/
 
       # GHA run unit tests
+
+      # Rewrite gradle.properties
+      - name: set gradle.properties
+        run: |
+          sed -i -e "s|jdk8=/opt/hostedtoolcache/jdk/8.0.292/x64|jdk8=${ORG_GRADLE_PROJECT_jdk8}|
+          s|jdk9=/opt/hostedtoolcache/jdk/9.0.7/x64|jdk9=${ORG_GRADLE_PROJECT_jdk9}|
+          s|jdk10=/opt/hostedtoolcache/jdk/10.0.2/x64|jdk10=${ORG_GRADLE_PROJECT_jdk10}|
+          s|jdk11=/opt/hostedtoolcache/jdk/11.0.11/x64|jdk11=${ORG_GRADLE_PROJECT_jdk11}|
+          s|jdk12=/opt/hostedtoolcache/jdk/12.0.2/x64|jdk12=${ORG_GRADLE_PROJECT_jdk12}|
+          s|jdk13=/opt/hostedtoolcache/jdk/13.0.7/x64|jdk13=${ORG_GRADLE_PROJECT_jdk13}|
+          s|jdk14=/opt/hostedtoolcache/jdk/14.0.2/x64|jdk14=${ORG_GRADLE_PROJECT_jdk14}|
+          s|jdk15=/opt/hostedtoolcache/jdk/15.0.3/x64|jdk15=${ORG_GRADLE_PROJECT_jdk15}|" gradle.properties
+          cat gradle.properties
+
       # Run the build.
       - name: Run unit tests for each Java version as defined in the matrix
         run: |
