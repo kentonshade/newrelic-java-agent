@@ -1,4 +1,4 @@
-name: GHA AIT functionality framework tests
+name: GHA AIT functionality server tests
 
 on:
   # pull_request:
@@ -143,33 +143,34 @@ jobs:
 
   ###
 
-  AIT_func_framework:
+  AIT_func_server:
     needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
     # Determine if easier to make the env strings below part of the matrix
     env:
       java_func_path: "tests/java/functionality"
-      java_func_type: "framework"
+      java_func_type: "server"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
       matrix:
         # func_path: [akka, ejb, jaxrs, jms, netty, play, quartz, snap, spring, thrift]
         func_tests:
-          - akka/akka.py
-          - akka/akkahttp.py
-          - ejb/ejb.py
-          - jaxrs/jaxrs.py
-          - jms/jms.py
-          - netty/etty.py
-          - play/play2.py
-          - quartz/quartz.py
-          - snap/snap.py
-          - spring/spring_4_3.py
-          - spring/spring_5_0.py
-          - spring/spring_webflux.py
-          - thrift/thrift.py
+          - embedded_jetty.py
+          - glassfish.py
+          - jetty.py
+          - mule.py
+          - resin.py
+          - solr.py
+          - solr5.py
+          - tomcat.py
+          - tomee.py
+          - vertx.py
+          - was_liberty.py
+          - weblogic.py
+          - websphere.py
+          - wildfly.py
 
     steps:
       - uses: actions/checkout@v2
@@ -311,11 +312,8 @@ jobs:
 
       # Replication of steps from ait README
 
-      # Is newrelicJar present in newrelic-agent/build
-      # TO DO: Below version number has to be dynamic
+      # Build the agent jar
       - name: Build newrelicJar
-        # env:
-        #   JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
         run: |
           echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
           echo "REVIEW ANY NEW ITEMS IN WORKSPACE"

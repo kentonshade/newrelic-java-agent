@@ -1,11 +1,16 @@
-## Matrix strategy test for Functional Tests
-name: GHA Functional Tests 2
+## Matrix strategy test for instrumentaion testing
+## Still need to configure AIT dependencies
+name: GHA Instrumentation Tests 2
 
 on:
   # pull_request:
-  #   branches: [ main ]
+  #   branches: [ gha-testing ] ## branches TBD
+  #   types: [assigned, opened, synchronize, reopened] ## Types TBD
   push:
     branches: [ gha-testing ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   install-all-java:
@@ -152,7 +157,7 @@ jobs:
 
   ###
 
-  matrix_functional_all_versions:
+  matrix_instrumentation_test:
     timeout-minutes: 120
     needs: install-all-java
     runs-on: ubuntu-latest
@@ -278,7 +283,42 @@ jobs:
             ${{ runner.os }}-gradle
 
 
-      # GHA run functional tests
+      ## AWS jars - plan to cache
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Download S3 instrumentation jar zip
+        run: aws s3 cp s3://nr-java-agent-s3-instrumentation/proprietary-jars-20200717.zip proprietary-jars.zip  ## 2020?
+
+      - name: Unzip the instrumentation jars
+        run: unzip proprietary-jars.zip
+
+      - name: Log jars are in target libs
+        run: find instrumentation -name "*.jar"
+      ## End AWS jars - plan to cache (check for cache, restore if required)
+
+      # Is newrelicJar present in newrelic-agent/build
+      # TO DO: Below version number has to be dynamic
+      - name: Build newrelicJar
+        # env:
+        #   JAVA_HOME: "/opt/hostedtoolcache/jdk/8.0.302/x64"
+        run: |
+          echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
+          echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
+          ls -la
+          ./gradlew clean jar --parallel
+          ls -la newrelic-agent/build/
+
+      - name: Check disk space
+        run: |
+          df -h
+          du -a ${GITHUB_WORKSPACE} | sort -n -r | head -n 10
+
+      # GHA run instrumentation tests
 
       # Rewrite gradle.properties
       - name: set gradle.properties
@@ -293,35 +333,31 @@ jobs:
           s|jdk15=/opt/hostedtoolcache/jdk/15.0.3/x64|jdk15=${ORG_GRADLE_PROJECT_jdk15}|" gradle.properties
           cat gradle.properties
 
-      # IS THIS IMPACTING TESTS?
-      - name: Build newrelicJar
-        run: |
-          echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
-          echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
-          ls -la
-          ./gradlew clean jar --parallel
-          ls -la newrelic-agent/build/
-
       # Run the build.
-      - name: Run functional tests against version defined in matrix
+      - name: Run instrumentation tests for each Java version as defined in the matrix
         run: |
           # Changed log level to --warn from --info
-          ./gradlew --console=plain --parallel functional_test:test -Ptest${{ matrix.java-version }} --continue --warn
+          ./gradlew --console=plain instrumentation:test -Ptest${{ matrix.java-version }} --continue --warn
+
+      # Run the build. Disabled for now.  Testing only.
+      - name: Run the tests with alternate Java version syntax - testing with -Dorg.gradle.java.home
+        run: |
+          ##./gradlew -Dorg.gradle.java.home=${ORG_GRADLE_PROJECT_jdk9} --console=plain instrumentation:test --continue --info
 
       # Capture HTML build result in artifacts
       - name: Capture build reports
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
         with:
-          name: unit-tests-results-java-${{ matrix.java-version }}
+          name: instrumentation-tests-results-java-${{ matrix.java-version }}
           path: |
-            functional_test/build/reports/tests/*
+            instrumentation/**/build/test-results/*
             # path/output/test-results
             # !path/**/*.tmp
 
 
-  testing_job_dependence: ## Test Only
-    needs:  matrix_functional_all_versions
+  testing_job_dependence: ## Testing Only
+    needs: matrix_instrumentation_test  ## Only runs after matrix_instrumentation_test runs
     runs-on: ubuntu-latest
     steps:
       # Print Environmental variables
