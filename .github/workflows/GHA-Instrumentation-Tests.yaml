@@ -1,6 +1,6 @@
 ## Matrix strategy test for instrumentaion testing
 ## Still need to configure AIT dependencies
-name: GHA Instrumentation Tests 2
+name: GHA Instrumentation Tests
 
 on:
   # pull_request:

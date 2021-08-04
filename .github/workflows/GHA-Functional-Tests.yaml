@@ -1,5 +1,5 @@
 ## Matrix strategy test for Functional Tests
-name: GHA Functional Tests 2
+name: GHA Functional Tests
 
 on:
   # pull_request:
