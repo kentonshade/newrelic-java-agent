@@ -158,7 +158,7 @@ jobs:
   ###
 
   AIT_func_basic_features:
-    needs: install-all-java
+    needs: install-all-javaP
     timeout-minutes: 120
     runs-on: ubuntu-latest
     # Determine if easier to make the env strings below part of the matrix
@@ -414,6 +414,13 @@ jobs:
           echo "Running ${{ matrix.func_basic_features }}"
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 \
           ./bin/runtest.sh ${java_func_path}/${java_func_type}/${{ matrix.func_tests }}
+
+
+      # Rename matrix item to remove problem characers
+      - name: Rename Matrix item test
+        run: |
+          echo ${{ matrix.func_tests}} | sed 's|/|-|g
+          # echo "MATRIX=${{ matrix.func_tests}} | sed 's|/|-|g'" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
