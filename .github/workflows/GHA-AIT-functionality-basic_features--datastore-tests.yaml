@@ -158,7 +158,7 @@ jobs:
   ###
 
   AIT_func_basic_features:
-    needs: install-all-javaP
+    needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
     # Determine if easier to make the env strings below part of the matrix
