@@ -409,7 +409,6 @@ jobs:
           MATRIX: ${{ matrix.func_tests}}
         run: |
           MATRIX_ITEM=$(echo ${MATRIX} | sed 's|/|-|g')
-          echo "The value of MATRIX is ${MATRIX_ITEM}"
           echo "MATRIX="${MATRIX_ITEM}"" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
