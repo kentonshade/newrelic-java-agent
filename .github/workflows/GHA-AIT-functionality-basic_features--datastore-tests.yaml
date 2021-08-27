@@ -425,6 +425,11 @@ jobs:
           echo "The value of MATRIX is ${MATRIX}"
           echo "MATRIX="${MATRIX}"" >> $GITHUB_ENV
 
+      # Check MATRIX value
+      - name: Print Environmental variables
+        run: |
+          printenv | sort -f
+
       # Capture Testing Artifacts
       - name: Capture testing artifacts
         if: ${{ failure() || success() }}
