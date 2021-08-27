@@ -421,8 +421,8 @@ jobs:
         env:
           MATRIX: ${{ matrix.func_tests}}
         run: |
-          echo ${MATRIX} | sed 's|/|-|g'
-          echo "MATRIX=${MATRIX} | sed 's|/|-|g'" >> $GITHUB_ENV
+          MATRIX=$(${MATRIX} | sed 's|/|-|g')
+          echo "${MATRIX}" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
