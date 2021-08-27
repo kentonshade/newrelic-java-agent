@@ -418,8 +418,10 @@ jobs:
 
       # Rename matrix item to remove problem characers
       - name: Rename Matrix item test
+        env:
+          MATRIX: ${{ matrix.func_tests}}
         run: |
-          echo ${{ matrix.func_tests}} | sed 's|/|-|g
+          echo ${MATRIX} | sed 's|/|-|g
           # echo "MATRIX=${{ matrix.func_tests}} | sed 's|/|-|g'" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
