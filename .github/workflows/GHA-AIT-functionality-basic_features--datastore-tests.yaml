@@ -158,7 +158,7 @@ jobs:
   ###
 
   AIT_func_basic_features:
-    needs: install-all-javaP
+    needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
     # Determine if easier to make the env strings below part of the matrix
@@ -417,17 +417,19 @@ jobs:
 
 
       # Rename matrix item to remove problem characers
-      - name: Rename Matrix item test
+      - name: Rename Matrix item
+        env:
+          MATRIX: ${{ matrix.func_tests}}
         run: |
-          echo ${{ matrix.func_tests}} | sed 's|/|-|g
-          # echo "MATRIX=${{ matrix.func_tests}} | sed 's|/|-|g'" >> $GITHUB_ENV
+          MATRIX_ITEM=$(echo ${MATRIX} | sed 's|/|-|g')
+          echo "MATRIX="${MATRIX_ITEM}"" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
         if: ${{ failure() || success() }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.workflow }}-${{ github.job }}-${{ matrix.func_tests}}
+          name: ${{ github.workflow }}-${{ github.job }}-${{ env.MATRIX }}
           path: |
             agent-integration-tests/testing-artifacts/*
 
@@ -678,12 +680,20 @@ jobs:
           TEST_LOG_LEVEL=DEBUG TEST_SUPPRESS_METRIC_DEBUG=1 \
           ./bin/runtest.sh ${java_func_path}/${java_func_type}/${{ matrix.func_tests }}
 
+      # Rename matrix item to remove problem characers
+      - name: Rename Matrix item
+        env:
+          MATRIX: ${{ matrix.func_tests}}
+        run: |
+          MATRIX_ITEM=$(echo ${MATRIX} | sed 's|/|-|g')
+          echo "MATRIX="${MATRIX_ITEM}"" >> $GITHUB_ENV
+
       # Capture Testing Artifacts temp for development
       - name: Capture testing artifacts
         if: ${{ failure() || success() }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.workflow }}-${{ github.job }}-${{ matrix.func_tests}}
+          name: ${{ github.workflow }}-${{ github.job }}-${{ env.Matrix }}
           path: |
             agent-integration-tests/testing-artifacts/*
 
