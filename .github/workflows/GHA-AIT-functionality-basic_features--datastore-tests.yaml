@@ -421,15 +421,15 @@ jobs:
         env:
           MATRIX: ${{ matrix.func_tests}}
         run: |
-          echo ${MATRIX} | sed 's|/|-|g
-          # echo "MATRIX=${{ matrix.func_tests}} | sed 's|/|-|g'" >> $GITHUB_ENV
+          echo ${MATRIX} | sed 's|/|-|g'
+          echo "MATRIX=${MATRIX} | sed 's|/|-|g'" >> $GITHUB_ENV
 
       # Capture Testing Artifacts
       - name: Capture testing artifacts
         if: ${{ failure() || success() }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.workflow }}-${{ github.job }}-${{ matrix.func_tests}}
+          name: ${{ github.workflow }}-${{ github.job }}-${{ env.MATRIX }}
           path: |
             agent-integration-tests/testing-artifacts/*
 
