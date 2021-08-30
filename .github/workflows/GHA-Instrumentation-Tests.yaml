@@ -1,5 +1,4 @@
-## Matrix strategy test for instrumentaion testing
-## Still need to configure AIT dependencies
+## Matrix strategy
 name: GHA-Instrumentation-Tests
 
 on:
@@ -20,7 +19,7 @@ jobs:
 
       # JDK cache
       - name: Cache jdk dir
-        id: cache-check
+        id: cache-jdk-dir
         uses: actions/cache@v2
         env:
           cache-name: cache-jdk-dir ## See if this works and includes all versions
@@ -38,7 +37,7 @@ jobs:
 
       # Install 8
       - name: Set up Java 8
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -46,7 +45,7 @@ jobs:
 
       # Install 9
       - name: Set up Java 9
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -54,7 +53,7 @@ jobs:
 
       # Install 10
       - name: Set up Java 10
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -62,7 +61,7 @@ jobs:
 
       # Install 11
       - name: Set up Java 11
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -70,7 +69,7 @@ jobs:
 
       # Install 12
       - name: Set up Java 12
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -78,7 +77,7 @@ jobs:
 
       # Install 13
       - name: Set up Java 13
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -86,7 +85,7 @@ jobs:
 
       # Install 14
       - name: Set up Java 14
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -94,7 +93,7 @@ jobs:
 
       # Install 15
       - name: Set up Java 15
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -102,7 +101,7 @@ jobs:
 
       # Install 16
       - name: Set up Java 16
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -110,7 +109,7 @@ jobs:
 
       # Check contents of cache path
       - name: check cache dir
-        # if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
           echo "contents of cache dir: "
@@ -122,7 +121,7 @@ jobs:
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
           touch ~/jdk_paths.txt
@@ -131,7 +130,7 @@ jobs:
 
       # Create env variables for the jdks - this step not necessary here
       - name: Create env variables for the jdks
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           JAVA_VERSION=8
           while read line
@@ -150,10 +149,9 @@ jobs:
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"
-        # if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
-          echo "Current $JAVA_HOME = " ${JAVA_HOME}
-          whereis java #determine dir to cache
+          echo "Current $JAVA_HOME = ${JAVA_HOME}"
 
   ###
 
@@ -174,10 +172,10 @@ jobs:
 
       # JDK cache
       - name: Cache jdk dir
-        id: cache-check
+        id: cache-jdk-dir
         uses: actions/cache@v2
         env:
-          cache-name: cache-jdk-dir ## See if this works and includes all versions
+          cache-name: cache-jdk-dir
         with:
           path: |
             ~/jdk_paths.txt
@@ -192,7 +190,7 @@ jobs:
 
       # Check contents of cache path
       - name: check cache dir
-        # if: steps.cache-check.outputs.cache-hit == 'true'
+        # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
           echo "contents of cache dir: "
@@ -204,7 +202,7 @@ jobs:
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
-        if: steps.cache-check.outputs.cache-hit != 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
           touch ~/jdk_paths.txt
@@ -213,7 +211,7 @@ jobs:
 
       # Create env variables for the jdks
       - name: Create env variables for the jdks
-        # if: steps.cache-check.outputs.cache-hit != 'true'
+        # if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           JAVA_VERSION=8
           while read line
