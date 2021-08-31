@@ -174,7 +174,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.BRANCH || emv.default-branch }}
+          ref: ${{ github.event.inputs.BRANCH || env.default-branch }}
       - uses: gradle/wrapper-validation-action@v1
 
       ## restore jdk cache dir here
