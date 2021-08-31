@@ -425,6 +425,7 @@ jobs:
 
       # Rename matrix item to remove problem characers
       - name: Rename Matrix item
+        if: ${{ failure() || success() }}
         env:
           MATRIX: ${{ matrix.func_tests}}
         run: |
@@ -692,6 +693,7 @@ jobs:
 
       # Rename matrix item to remove problem characers
       - name: Rename Matrix item
+        if: ${{ failure() || success() }}
         env:
           MATRIX: ${{ matrix.func_tests}}
         run: |
