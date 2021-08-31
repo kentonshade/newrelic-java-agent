@@ -9,7 +9,11 @@ on:
     branches: [ gha-testing, gha, main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    # inputs:
+    inputs:
+      BRANCH:
+        description: "Specify branch (master is default)"
+        required: false
+        default: 'master'
 
 jobs:
   install-all-java:
@@ -167,6 +171,8 @@ jobs:
         java-version: [8, 9, 10, 11, 12, 13, 14, 15]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.BRANCH || master }}
       - uses: gradle/wrapper-validation-action@v1
 
       ## restore jdk cache dir here
