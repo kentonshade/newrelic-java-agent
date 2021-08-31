@@ -165,6 +165,8 @@ jobs:
     timeout-minutes: 120
     needs: install-all-java
     runs-on: ubuntu-latest
+    env:
+      default-branch: "master"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
@@ -173,7 +175,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.BRANCH || "master" }}
+          ref: ${{ github.event.inputs.BRANCH || env.default-branch }}
       - uses: gradle/wrapper-validation-action@v1
 
 

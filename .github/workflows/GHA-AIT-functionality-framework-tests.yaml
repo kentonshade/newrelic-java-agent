@@ -168,6 +168,7 @@ jobs:
     env:
       java_func_path: "tests/java/functionality"
       java_func_type: "framework"
+      default-branch: "master"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
@@ -191,7 +192,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.BRANCH || "master" }}
+          ref: ${{ github.event.inputs.BRANCH || env.default-branch }}
 
       ## Ongoing tests with artifactory dependecies
       - name: Checkout AIT repo test
