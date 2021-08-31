@@ -195,7 +195,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.BRANCH || master }}
+          ref: ${{ github.event.inputs.BRANCH || "master" }}
 
       ## Ongoing tests with artifactory dependecies
       - name: Checkout AIT repo test
@@ -467,7 +467,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.BRANCH || master }}
+          ref: ${{ github.event.inputs.BRANCH || "master" }}
 
       ## Ongoing tests with artifactory dependecies
       - name: Checkout AIT repo test
