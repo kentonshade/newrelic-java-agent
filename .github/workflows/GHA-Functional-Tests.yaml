@@ -165,7 +165,7 @@ jobs:
     needs: install-all-java
     runs-on: ubuntu-latest
     env:
-      default-branch: "master"
+      default-branch: "gha"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
