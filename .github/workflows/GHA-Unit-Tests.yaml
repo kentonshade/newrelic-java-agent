@@ -14,7 +14,7 @@ on:
       BRANCH:
         description: "Specify branch (master is default)"
         required: false
-        default: 'master'
+        default: 'main'
 
 jobs:
   install-all-java:
