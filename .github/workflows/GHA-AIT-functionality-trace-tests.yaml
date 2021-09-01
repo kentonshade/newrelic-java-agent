@@ -427,6 +427,7 @@ jobs:
           name: ${{ github.workflow }}-${{ github.job }}-${{ env.MATRIX }}
           path: |
             agent-integration-tests/testing-artifacts/*
+            **/build/test-results/**/*.xml
 
       # Print Environmental variables
       - name: Print Environmental variables (verify activate has been sourced)
