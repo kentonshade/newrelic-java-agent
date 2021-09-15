@@ -308,6 +308,8 @@ jobs:
 
       # Run the build.
       - name: Run unit tests for each Java version as defined in the matrix
+        env:
+          JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
           # Changed log level to --warn from --info
           # ./gradlew --console=plain --parallel clean test -x functional_test:test -PnoInstrumentation -Ptest${{ matrix.java-version }} --continue --warn
