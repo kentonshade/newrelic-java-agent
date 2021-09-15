@@ -288,8 +288,10 @@ jobs:
 
       # IS THIS IMPACTING TESTS?
       - name: Build newrelicJar
+        env:
+          JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
-          echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
+          # echo "JAVA_HOME=${ORG_GRADLE_PROJECT_jdk8}" >> $GITHUB_ENV
           echo "REVIEW ANY NEW ITEMS IN WORKSPACE"
           ls -la
           ./gradlew clean jar --parallel
@@ -302,6 +304,8 @@ jobs:
 
       # Run the build.
       - name: Run functional tests against version defined in matrix
+        env:
+          JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
           # Changed log level to --warn from --info
           ./gradlew --console=plain --parallel functional_test:test -Ptest${{ matrix.java-version }} --continue --warn
