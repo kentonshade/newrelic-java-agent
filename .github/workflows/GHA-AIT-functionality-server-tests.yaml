@@ -168,7 +168,7 @@ jobs:
     env:
       java_func_path: "tests/java/functionality"
       java_func_type: "server"
-      default-branch: "gha"
+      default-branch: "main"
     strategy:
       ##max-parallel: 1 ## used to force sequential
       fail-fast: false
