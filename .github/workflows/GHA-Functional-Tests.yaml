@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       BRANCH:
-        description: "Specify branch (master is default)"
+        description: "Specify branch (main is default)"
         required: false
         default: 'main'
 
