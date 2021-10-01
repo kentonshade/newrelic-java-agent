@@ -1,6 +1,7 @@
-## Matrix strategy test for unit testing
+## Using matrix strategy test for unit testing
 name: GHA-Unit-Tests
 
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
 on:
   pull_request:
     branches: [ gha ] ## branches TBD
@@ -9,6 +10,7 @@ on:
     branches: [ gha-testing, gha, main ]
   # Allows you to run this workflow manually from the Actions tab
   # Use context values as : ${{ github.event.inputs.BRANCH }}
+  # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#onworkflow_dispatchinputs
   workflow_dispatch:
     inputs:
       BRANCH:
@@ -25,9 +27,11 @@ jobs:
       # JDK cache
       - name: Cache jdk dir
         id: cache-jdk-dir
+        # https://github.com/actions/cache
         uses: actions/cache@v2.1.6
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idenv
         env:
-          cache-name: cache-jdk-dir ## See if this works and includes all versions
+          cache-name: cache-jdk-dir
         with:
           path: |
             ~/jdk_paths.txt
@@ -42,7 +46,9 @@ jobs:
 
       # Install 8
       - name: Set up Java 8
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsif
         if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
+        # https://github.com/actions/setup-java
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -114,7 +120,7 @@ jobs:
 
       # Check contents of cache path
       - name: check cache dir
-        # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
+        if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
           echo "contents of cache dir: "
@@ -133,11 +139,12 @@ jobs:
           ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > jdk_paths.txt
           ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > ~/jdk_paths.txt
 
-      # Create env variables for the jdks - this step not necessary here
+      # Create ENV variables for the JDKs
+      # This is necessary for use in contexts, etc.
       - name: Create env variables for the jdks
         if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
-          JAVA_VERSION=8
+          JAVA_VERSION=8 # This is the starting version, 8
           while read line
           do
               echo $line
@@ -161,15 +168,18 @@ jobs:
 
   ###
 
-  matrix_unit_test:  ## Determine the module dependencies, why are we seeing errors for version not tested?
+  matrix_unit_test:
     timeout-minutes: 120
     needs: install-all-java
     runs-on: ubuntu-latest
     env:
       default-branch: "main"
     strategy:
-      ##max-parallel: 1 ## used to force sequential
+      # max-parallel: 1 ## used to force sequential vs. concurrent
       fail-fast: false
+      # https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix
+      # A matrix allows you to create multiple jobs by performing
+      # variable substitution in a single job definition
       matrix:
         java-version: [8, 9, 10, 11, 12, 13, 14, 15, 16]
     steps:
