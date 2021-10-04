@@ -168,7 +168,7 @@ jobs:
 
   ###
 
-  matrix_unit_test:
+  matrix-unit-test:
     timeout-minutes: 120
     needs: install-all-java
     runs-on: ubuntu-latest
@@ -343,7 +343,7 @@ jobs:
             # path/output/test-results
             # !path/**/*.tmp
 
-  testing_job_dependence: ## Testing Only
+  testing-job-dependence: ## Testing Only
     needs: matrix_unit_test
     runs-on: ubuntu-latest
     steps:
