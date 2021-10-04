@@ -345,7 +345,7 @@ jobs:
 
 
   testing_job_dependence: ## Testing Only
-    needs: matrix-instrumentation-test  ## Only runs after matrix_instrumentation_test runs
+    needs: matrix-instrumentation-tests  ## Only runs after matrix_instrumentation_test runs
     runs-on: ubuntu-latest
     steps:
       # Print Environmental variables
