@@ -234,7 +234,7 @@ jobs:
           ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > ~/jdk_paths.txt
 
       # Create env variables for the jdks
-      - name: Create env variables for the jdks
+      - name: Create env variables for the JDKs
         # if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           JAVA_VERSION=8
@@ -288,6 +288,9 @@ jobs:
       # TO DO: Below version number has to be dynamic
       - name: Build newrelicJar
         env:
+          # below is availabel to contect ONLY BECAUSE IT WAS EXPLICITLY ADDED
+          # IN A PREVIOUS STEP.
+          # Not all ENV variables are available for contexts by default
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
           echo "JAVA_HOME=${JAVA_HOME}"
@@ -304,7 +307,7 @@ jobs:
       # GHA run unit tests
 
       # Rewrite gradle.properties
-      - name: set gradle.properties
+      - name: Set gradle.properties
         run: |
           sed -i -e "s|jdk8=8|jdk8=${ORG_GRADLE_PROJECT_jdk8}|
           s|jdk9=9|jdk9=${ORG_GRADLE_PROJECT_jdk9}|
