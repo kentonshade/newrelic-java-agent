@@ -198,7 +198,7 @@ jobs:
             ${{ github.workflow }}-
 
       # Check contents of cache path
-      - name: check cache dir
+      - name: Check cache dir
         # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
@@ -271,7 +271,7 @@ jobs:
       # GHA run functional tests
 
       # Rewrite gradle.properties
-      - name: set gradle.properties
+      - name: Set gradle.properties
         run: |
           sed -i -e "s|jdk8=8|jdk8=${ORG_GRADLE_PROJECT_jdk8}|
           s|jdk9=9|jdk9=${ORG_GRADLE_PROJECT_jdk9}|

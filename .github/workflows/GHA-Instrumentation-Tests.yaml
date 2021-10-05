@@ -112,7 +112,7 @@ jobs:
           java-version: 16
 
       # Check contents of cache path
-      - name: check cache dir
+      - name: Check cache dir
         # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
@@ -197,7 +197,7 @@ jobs:
             ${{ github.workflow }}-
 
       # Check contents of cache path
-      - name: check cache dir
+      - name: Check cache dir
         # if: steps.cache-jdk-dir.outputs.cache-hit == 'true'
         run: |
           pwd
