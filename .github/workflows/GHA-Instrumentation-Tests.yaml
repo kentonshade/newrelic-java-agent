@@ -318,10 +318,8 @@ jobs:
         env:
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
-          # Changed log level to --warn from --info
-          # ./gradlew --console=plain instrumentation:test -Ptest${{ matrix.java-version }} --continue --warn
           # Below per https://github.com/newrelic/newrelic-java-agent/pull/451, adding the matrix value to Ptest
-          ./gradlew --console=plain --parallel clean :instrumentation:build -Ptest${{ matrix.java-version }} -PnoScala --continue
+          ./gradlew --console=plain --parallel clean :instrumentation:test -Ptest${{ matrix.java-version }} -PnoScala --continue
 
       # Capture HTML build result in artifacts
       - name: Capture build reports
@@ -490,11 +488,9 @@ jobs:
         env:
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
-          # Changed log level to --warn from --info
-          # ./gradlew --console=plain instrumentation:test -Ptest${{ matrix.java-version }} --continue --warn
           # Below per https://github.com/newrelic/newrelic-java-agent/pull/451, adding the matrix value to Ptest
           # ./gradlew --console=plain --parallel clean :instrumentation:build -Ptest${{ matrix.java-version }} -PnoScala --continue
-          ./gradlew --console=plain --parallel clean :instrumentation:build -Ptest${{ matrix.java-version }} -PnoInstrumentation -PnoScala -Pscala-${{ matrix.scala }} --continue
+          ./gradlew --console=plain --parallel clean :instrumentation:test -Ptest${{ matrix.java-version }} -PnoInstrumentation -PnoScala -Pscala-${{ matrix.scala }} --continue
 
       # Capture HTML build result in artifacts
       - name: Capture build reports
