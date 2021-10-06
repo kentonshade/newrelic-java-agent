@@ -260,8 +260,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       # Set current default jdk version
-      # - name: Save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
-      #   run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
+      - name: Save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
+        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
 
       # Check $JAVA_HOME - This should be equal to the version of the matrix run
       # - name: Check "$JAVA_HOME"

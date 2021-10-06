@@ -239,7 +239,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
-        run: echo "JAVA_HOME=ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}" >> $GITHUB_ENV
+        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"

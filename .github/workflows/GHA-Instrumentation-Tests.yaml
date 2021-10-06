@@ -238,7 +238,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       - name: save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
-        run: run: echo "JAVA_HOME=ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}" >> $GITHUB_ENV
+        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
 
       # Check $JAVA_HOME
       - name: Check "$JAVA_HOME"
@@ -319,12 +319,9 @@ jobs:
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
           # Changed log level to --warn from --info
-          ./gradlew --console=plain instrumentation:test -Ptest${{ matrix.java-version }} --continue --warn
-
-      # Run the build. Disabled for now.  Testing only.
-      - name: Run the tests with alternate Java version syntax - testing with -Dorg.gradle.java.home
-        run: |
-          ##./gradlew -Dorg.gradle.java.home=${ORG_GRADLE_PROJECT_jdk9} --console=plain instrumentation:test --continue --info
+          # ./gradlew --console=plain instrumentation:test -Ptest${{ matrix.java-version }} --continue --warn
+          # Below per https://github.com/newrelic/newrelic-java-agent/pull/451, ading the matrix value to Ptest
+          ./gradlew --console=plain --parallel clean :instrumentation:build -Ptest${{ matrix.java-version }} -PnoScala --continue
 
       # Capture HTML build result in artifacts
       - name: Capture build reports
