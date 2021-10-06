@@ -40,7 +40,6 @@ jobs:
           cache-name: cache-jdk-dir
         with:
           path: |
-            ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/Java_Adopt_jdk/
           # Explore extensions to cache if no lock file
@@ -141,9 +140,7 @@ jobs:
         if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
-          touch ~/jdk_paths.txt
           ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > jdk_paths.txt
-          ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > ~/jdk_paths.txt
 
       # Create ENV variables for the JDKs
       # This is necessary for use in contexts, etc.
@@ -205,7 +202,6 @@ jobs:
           cache-name: cache-jdk-dir
         with:
           path: |
-            ~/jdk_paths.txt
             jdk_paths.txt
             /opt/hostedtoolcache/Java_Adopt_jdk/
           # Explore extensions to cache if no lock file
@@ -235,9 +231,7 @@ jobs:
         if: steps.cache-jdk-dir.outputs.cache-hit != 'true'
         run: |
           touch jdk_paths.txt
-          touch ~/jdk_paths.txt
           ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > jdk_paths.txt
-          ls -1v /opt/hostedtoolcache/Java_Adopt_jdk/ > ~/jdk_paths.txt
 
       # Create env variables for the jdks
       - name: Create env variables for the JDKs
@@ -266,14 +260,14 @@ jobs:
           java-version: ${{ matrix.java-version }}
 
       # Set current default jdk version
-      - name: Save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
-        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
+      # - name: Save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
+      #   run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
 
       # Check $JAVA_HOME - This should be equal to the version of the matrix run
-      - name: Check "$JAVA_HOME"
-        run: |
-          echo "Current $JAVA_HOME = " ${JAVA_HOME}
-          whereis java #determine dir to cache
+      # - name: Check "$JAVA_HOME"
+      #   run: |
+      #     echo "Current $JAVA_HOME = " ${JAVA_HOME}
+      #     whereis java #determine dir to cache
 
       # Restore the gradle cache
       - name: Restore the gradle caches
@@ -336,17 +330,8 @@ jobs:
         env:
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
-          # Changed log level to --warn from --info
-          # ./gradlew --console=plain --parallel clean test -x functional_test:test -PnoInstrumentation -Ptest${{ matrix.java-version }} --continue --warn
-          # Per jason, trying without "--parallel"
-          ./gradlew --console=plain clean test -x functional_test:test -PnoInstrumentation -Ptest${{ matrix.java-version }} --continue --warn
-
-      # Run the build.
-      # An alternative to the standard gradlew command but neve used.
-      - name: Run the tests with alternate Java version syntax - testing with -Dorg.gradle.java.home
-        run: |
-          # ./gradlew -Dorg.gradle.java.home=${ORG_GRADLE_PROJECT_jdk9} --console=plain --parallel functional_test:test -PnoInstrumentation --continue --info
-
+          # Updated Gradle command per https://github.com/newrelic/newrelic-java-agent/pull/451
+          ./gradlew --console=plain --parallel clean test -x :functional_test:test -x :newrelic-scala-api:test -x :newrelic-scala-cats-api:test -x :newrelic-scala-zio-api:test -Ptest${{ matrix.java-version }} -PnoInstrumentation --continue
 
       # Capture HTML build result in artifacts
       # https://github.com/actions/upload-artifact
@@ -360,52 +345,3 @@ jobs:
             agent*/build/reports/tests/*
             # path/output/test-results
             # !path/**/*.tmp
-
-  testing-job-dependence: # Testing Only
-    needs: matrix-unit-test
-    runs-on: ubuntu-latest
-    steps:
-      # Print Environmental variables
-      - name: Print Environmental variables (verify activate has been sourced)
-        run: |
-          printenv
-
-      - name: Cache test directory
-        uses: actions/cache@v2.1.6
-        env:
-          cache-name: cache-test-dir
-        with:
-          path: test-cache-dir
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      ## List cached items
-      - name: List items in testing cached directory
-        run: |
-          cd test-cache-dir
-          ls -la
-          cd ../
-
-      # Restore the gradle cache
-      - name: Restore the gradle caches
-        uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          # The docs say to use hashfiles, but gradle itself is smart enough to
-          # re-download dependencies if it couldn't resolve them.
-          # Because our gradle cache is _so big_, I think a 90% cache is far
-          # better than a 0% cache.
-          key: ${{ runner.os }}-gradle
-          restore-keys: |
-            ${{ runner.os }}-gradle
-
-      - name: Check that all the Java versions are installed
-        run: |
-          pwd
-          ls -la
-          whereis java
