@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       BRANCH:
-        description: "Specify branch (master is default)"
+        description: "Specify branch (main is default)"
         required: false
         default: 'main'
 
@@ -201,8 +201,6 @@ jobs:
           ls -la /opt/hostedtoolcache/Java_Adopt_jdk/
           echo "checking for jdk_paths.txt: "
           ls -la
-          echo "checking for file in home: "
-          ls -la ~/
 
       # Create jdk_paths.txt
       - name: Create jdk_paths
@@ -290,11 +288,6 @@ jobs:
           ./gradlew clean jar --parallel
           ls -la newrelic-agent/build/
 
-      - name: Check disk space
-        run: |
-          df -h
-          du -a ${GITHUB_WORKSPACE} | sort -n -r | head -n 10
-
       # GHA run instrumentation tests
 
       # Rewrite gradle.properties
@@ -314,7 +307,7 @@ jobs:
           mv gradle.properties.gha gradle.properties
 
       # Run the build.
-      - name: Run instrumentation tests for each Java version as defined in the matrix
+      - name: Run instrumentation tests for Java ${{ matrix.java-version }} as defined in the matrix
         env:
           JAVA_HOME: ${{ env.ORG_GRADLE_PROJECT_jdk8 }}
         run: |
