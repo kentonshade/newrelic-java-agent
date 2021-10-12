@@ -405,13 +405,14 @@ jobs:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
 
-      - name: save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
-        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
-
-      # Check $JAVA_HOME
+      # Confirm reset of JAVA_HOME
       - name: Check "$JAVA_HOME"
         run: |
           echo "Current $JAVA_HOME = " ${JAVA_HOME}
+
+      # As setup-java resets JAVA_HOME, we set the new variable to the value of $JAVA_HOME
+      - name: save JAVA_HOME as JDK${{ matrix.java-version }} for later usage
+        run: echo "ORG_GRADLE_PROJECT_jdk${{ matrix.java-version }}=$JAVA_HOME" >> $GITHUB_ENV
 
       # Restore the gradle cache
       - name: Restore the gradle caches
@@ -429,6 +430,7 @@ jobs:
             ${{ runner.os }}-gradle
 
       ## AWS jars - plan to cache
+      # secrets are available in the interface, but may NOT be edited.
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
