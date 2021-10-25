@@ -119,6 +119,7 @@ jobs:
 
       # Set the JDk variable
       - name: Set the required JDK variable
+        run: |
           echo "ORG_GRADLE_PROJECT_jdk9=${JAVA_HOME}" >> $GITHUB_ENV
 
       # Install 10
