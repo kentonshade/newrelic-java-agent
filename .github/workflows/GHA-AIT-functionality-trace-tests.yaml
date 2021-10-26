@@ -3,7 +3,7 @@ name: GHA-AIT-functionality-trace-tests
 on:
   pull_request:
     branches: [ gha ] ## branches TBD
-    types: [assigned, opened, synchronize, reopened, ready_for_review] ## Types TBD
+    types: [assigned, opened, synchronize, reopened, ready_for_review] # Types TBD
   push:
     branches: [ gha-testing, gha, main ]
   workflow_dispatch:
@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-agent-integration-tests
-          ref: ghe-main
+          ref: main
           token: ${{ secrets.AITPAT }}
           path: agent-integration-tests
 
@@ -189,7 +189,7 @@ jobs:
 
       ## CUSTOM ACTIONS
       # Checkout the private actions repo and then call the action
-      - name: Get private repo with composite action
+      - name: Get private java-actions repo with composite action
         uses: actions/checkout@v2
         with:
           repository: newrelic/java-actions
@@ -203,7 +203,7 @@ jobs:
           ls -la .github/actions/ait
 
       # Call the action
-      - name: Run the AIT action
+      - name: Run the AIT action - ${{ matrix.func_tests}}
         uses: ./.github/actions/ait
 
       ## End custom action
