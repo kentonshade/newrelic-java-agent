@@ -277,12 +277,11 @@ jobs:
       # Verify java-actions directory
       - name: Verify ait actions directory
         run: |
-          ls -la
           ls -la .github/actions/ait
 
       # Call the action
-      # - name: Run the testing action
-      #   uses: ./.github/actions/ait
+      - name: Run the AIT action
+        uses: ./.github/actions/ait
 
       ## End custom action
 
@@ -373,5 +372,6 @@ jobs:
 
       # Print Environmental variables
       - name: Print Environmental variables (verify activate has been sourced)
+        if: failure() || success()
         run: |
           printenv |  sort -f
