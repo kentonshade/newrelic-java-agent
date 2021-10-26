@@ -258,10 +258,33 @@ jobs:
           ./gradlew clean jar --parallel
           ls -la newrelic-agent/build/
 
-      - name: CD to agent-integration-tests dir.
+      - name: Check agent-integration-tests dir.
         run: |
-          cd agent-integration-tests/
+          ls -la agent-integration-tests/
+
+      ## Testing replacing below step with custom action
+
+      ## CUSTOM ACTIONS
+      # Checkout the private actions repo and then call the action
+      - name: Get private repo with composite action
+        uses: actions/checkout@v2
+        with:
+          repository: newrelic/java-actions
+          ref: main
+          token: ${{ secrets.ACTIONS_TOKEN }}
+          path: .github/actions
+
+      # Verify java-actions directory
+      - name: Verify ait actions directory
+        run: |
           ls -la
+          ls -la .github/actions/ait
+
+      # Call the action
+      # - name: Run the testing action
+      #   uses: ./.github/actions/ait
+
+      ## End custom action
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
       ## TODO: This should really be a custom action, too many commands
