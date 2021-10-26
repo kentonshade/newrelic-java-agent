@@ -187,29 +187,28 @@ jobs:
 
       ## Testing replacing below step with custom action
 
-      ## CUSTOM ACTIONS
+      ## CUSTOM ACTIONS - DO NOT REMOVE
       # Checkout the private actions repo and then call the action
-      - name: Get private java-actions repo with composite action
-        uses: actions/checkout@v2
-        with:
-          repository: newrelic/java-actions
-          ref: main
-          token: ${{ secrets.ACTIONS_TOKEN }}
-          path: .github/actions
+      # - name: Get private java-actions repo with composite action
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: newrelic/java-actions
+      #     ref: main
+      #     token: ${{ secrets.ACTIONS_TOKEN }}
+      #     path: .github/actions
 
       # Verify java-actions directory
-      - name: Verify ait actions directory
-        run: |
-          ls -la .github/actions/ait
+      # - name: Verify ait actions directory
+      #   run: |
+      #     ls -la .github/actions/ait
 
       # Call the action
-      - name: Run the AIT action - ${{ matrix.func_tests}}
-        uses: ./.github/actions/ait
+      # - name: Run the AIT action - ${{ matrix.func_tests}}
+      #   uses: ./.github/actions/ait
 
       ## End custom action
 
       ## WE LOSE THE VIRTUAL ENVIRONMENT ONCE WE LEAVE THE STEP
-      ## TODO: This should really be a custom action, too many commands
       - name: Create virtualenv and run AITs - ${{ matrix.func_tests}}
         if: ${{ failure() || success() }}
         run: |
