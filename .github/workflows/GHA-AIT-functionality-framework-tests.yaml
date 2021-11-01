@@ -161,7 +161,7 @@ jobs:
   # ###
 
   AIT_func_framework:
-    needs: install-all-java
+    # needs: install-all-java
     timeout-minutes: 120
     runs-on: ubuntu-latest
     # Determine if easier to make the env strings below part of the matrix
