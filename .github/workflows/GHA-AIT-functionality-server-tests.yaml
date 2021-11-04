@@ -125,7 +125,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 11
-          cache: 'gradle'
+          # cache: 'gradle'
 
       # Set the JDk variable
       - name: Set the required JDK variable
@@ -138,7 +138,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 16
-          cache: 'gradle'
+          # cache: 'gradle'
 
       # Set the JDk variable
       - name: Set the required JDK variable
@@ -151,7 +151,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: 8
-          cache: 'gradle'
+          # cache: 'gradle'
 
       # Set the JDk variable
       - name: Set the required JDK variable
